@@ -67,7 +67,6 @@ public class QuestionFragment extends Fragment{
 
     private LinearLayout mAnswerContainer;
     private LinearLayout mAdContainer;
-    private LayoutInflater mLayoutInflater;
     private LinearLayout.LayoutParams mParams;
     private LinearLayout mGameContainer;
     private LinearLayout mFirstRowContainer;
@@ -86,125 +85,6 @@ public class QuestionFragment extends Fragment{
     private SoundRep mSoundRep;
     private InterstitialAd mInterstitialAd;
     private RewardedVideoAd mRewardedVideoAd;
-
-    private class AnswerCell implements View.OnClickListener{
-        private TextView mAnswerTextView;
-        private GameCell mGameCell = null;
-        private char mAnswerSymbol;
-        private char mCorrectSymbol;
-
-        private AnswerCell(TextView textView, char correctSymbol){
-            mAnswerTextView = textView;
-            mAnswerTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.textColor));
-            mCorrectSymbol = correctSymbol;
-
-            if (wordLength > 13) mAnswerTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            else mAnswerTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-
-            mAnswerTextView.setMinEms(1);
-            setEmpty();
-            mAnswerTextView.setOnClickListener(this);
-        }
-
-        private void setEmpty(){
-            mAnswerSymbol = EMPTY;
-            mAnswerTextView.setText(String.valueOf(mAnswerSymbol));
-        }
-
-        private boolean isEmpty(){
-            return mAnswerSymbol == EMPTY;
-        }
-
-        private void setAnswerSymbol(GameCell gameCell){
-            mGameCell = gameCell;
-            mAnswerSymbol = gameCell.getGameSymbol();
-            mAnswerTextView.setText(String.valueOf(mAnswerSymbol));
-        }
-
-        private void showCorrectSymbol(){
-            mAnswerSymbol = mCorrectSymbol;
-            mAnswerTextView.setText(String.valueOf(mAnswerSymbol));
-            mAnswerTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.isClickedButton));
-            mAnswerTextView.setBackgroundResource(R.drawable.bottom_stroke_green);
-        }
-
-        private boolean compareAnswerSymbols(){
-            return mAnswerSymbol == mCorrectSymbol;
-        }
-
-        private void clearAnswerCell(){
-            if (this.mGameCell != null){
-                this.mGameCell.showCell();
-                setEmpty();
-                this.mGameCell = null;
-            }
-        }
-
-        @Override
-        public void onClick(View view) {
-            if (useSecondHint){
-                if (isEmpty()){
-                    mSoundRep.playSound(mSoundRep.getButtonClickSound());
-                    mPoints.useSecondHint();
-                    mHintTitle.setText(getString(R.string.hints_title, mPoints.getCurrentPoints()));
-                    hidePickCell(mCorrectSymbol);
-                    showCorrectSymbol();
-                    checkForWin();
-                }
-                setDefaultImageSecondHint();
-            }
-            if (!isEmpty() && (mGameCell != null)) {
-                mSoundRep.playSound(mSoundRep.getButtonClickSound());
-                clearAnswerCell();
-            }
-        }
-    }
-
-//    private class GameCell implements View.OnClickListener{
-//        private TextView mGameTextView;
-//        private char mGameSymbol;
-//        private boolean isClicked = false;
-//        private boolean isRightSymbol = false;
-//
-//        private GameCell(TextView textView){
-//            mGameTextView = textView;
-//            mGameTextView.setOnClickListener(this);
-//        }
-//
-//        private void setGameSymbol(char symbol){
-//            mGameSymbol = symbol;
-//            mGameTextView.setText(String.valueOf(mGameSymbol));
-//        }
-//
-//        private void showCell(){
-//            mGameTextView.setVisibility(View.VISIBLE);
-//            isClicked = false;
-//        }
-//
-//        private void hideCell(){
-//            if (!isClicked){
-//                mGameTextView.setVisibility(View.INVISIBLE);
-//            }
-//        }
-//
-//        @Override
-//        public void onClick(View view){
-//            mSoundRep.playSound(mSoundRep.getButtonClickSound());
-//            if (useSecondHint) setDefaultImageSecondHint();
-//            for(AnswerCell answerCell: mAnswerCells){
-//                if (answerCell.isEmpty()){
-//                    if (!isClicked){
-//                        answerCell.setAnswerSymbol(this);
-//                        hideCell();
-//                        isClicked = true;
-//                        checkForWin();
-//                        return;
-//                    }
-//                    return;
-//                }
-//            }
-//        }
-//    }
 
     public static QuestionFragment newInstance(String category){
         Bundle bundle = new Bundle();
@@ -284,7 +164,6 @@ public class QuestionFragment extends Fragment{
         });
         mPref = getActivity().getSharedPreferences(APP_TAG, Context.MODE_PRIVATE);
         mParams = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        mLayoutInflater = getActivity().getLayoutInflater();
         mSoundRep = new SoundRep(getContext());
         mPoints = new Points(mPref);
         setInterstitialAd();
@@ -371,13 +250,10 @@ public class QuestionFragment extends Fragment{
 
     private void setRowContainer(LinearLayout linearLayout){
         LinearLayout.LayoutParams mGameParams = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 1.0f);
+        mGameParams.setMargins(3, 3, 3, 3);
         for (int i = 0; i < 6; i++){
             final GameCell gameCell = new GameCell(getActivity());
-            mGameParams.setMargins(3, 3, 3, 3);
             gameCell.setLayoutParams(mGameParams);
-            gameCell.setMinEms(1);
-            gameCell.setTextSize(22);
-            gameCell.setTextColor(ContextCompat.getColor(getContext(), R.color.textColor));
             linearLayout.addView(gameCell);
             mGameCells.add(gameCell);
             gameCell.setOnClickListener(new View.OnClickListener() {
@@ -433,10 +309,29 @@ public class QuestionFragment extends Fragment{
 
         for (int i = 0; i < word.length(); i++) {
             if (word.charAt(i) != EMPTY){
-                AnswerCell answerCell = new AnswerCell((TextView) mLayoutInflater.inflate(R.layout.answer_text_view, mAnswerContainer, false)
-                , word.charAt(i));
-                mAnswerContainer.addView(answerCell.mAnswerTextView, mParams);
+                final AnswerCell answerCell = new AnswerCell(getActivity(), word.charAt(i), wordLength);
+                mAnswerContainer.addView(answerCell, mParams);
                 mAnswerCells.add(answerCell);
+                answerCell.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (useSecondHint){
+                            if (answerCell.isEmpty()){
+                                mSoundRep.playSound(mSoundRep.getButtonClickSound());
+                                mPoints.useSecondHint();
+                                mHintTitle.setText(getString(R.string.hints_title, mPoints.getCurrentPoints()));
+                                hidePickCell(answerCell.getCorrectSymbol());
+                                answerCell.showCorrectSymbol();
+                                checkForWin();
+                            }
+                            setDefaultImageSecondHint();
+                        }
+                        if (!answerCell.isEmpty() && (answerCell.getGameCell() != null)) {
+                            mSoundRep.playSound(mSoundRep.getButtonClickSound());
+                            answerCell.clearAnswerCell();
+                        }
+                    }
+                });
             }else{
                 TextView emptyTextView = new TextView(getActivity());
                 emptyTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 5);
@@ -465,7 +360,7 @@ public class QuestionFragment extends Fragment{
                 mPoints.increasePoints();
             }else{
                 for(AnswerCell answerCell: mAnswerCells){
-                    animationWrong(answerCell.mAnswerTextView);
+                    animationWrong(answerCell);
                 }
             }
         }
@@ -617,8 +512,8 @@ public class QuestionFragment extends Fragment{
         }
         if (temp){
             for(AnswerCell answerCell: mAnswerCells){
-                if (answerCell.mGameCell != null && answerCell.mAnswerSymbol == correctSymbol && answerCell.mGameCell.isRightSymbol()){
-                    GameCell gameCell = answerCell.mGameCell;
+                if (answerCell.getGameCell() != null && answerCell.getAnswerSymbol() == correctSymbol && answerCell.getGameCell().isRightSymbol()){
+                    GameCell gameCell = answerCell.getGameCell();
                     answerCell.clearAnswerCell();
                     gameCell.hideCell();
                     gameCell.setClicked(true);

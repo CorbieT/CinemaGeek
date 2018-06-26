@@ -1,10 +1,12 @@
 package com.bignerdranch.android.cinemaquiz;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatButton;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatTextView;
+import android.view.Gravity;
 import android.view.View;
 
-public class GameCell extends AppCompatButton{
+public class GameCell extends AppCompatTextView{
 
     private char mGameSymbol;
     private boolean isClicked = false;
@@ -12,6 +14,10 @@ public class GameCell extends AppCompatButton{
 
     public GameCell(Context context) {
         super(context);
+        setGravity(Gravity.CENTER_HORIZONTAL);
+        setMinEms(1);
+        setTextSize(28);
+        setTextColor(ContextCompat.getColor(getContext(), R.color.textColor));
         this.setBackgroundResource(R.drawable.rectangle_rounded);
     }
 
