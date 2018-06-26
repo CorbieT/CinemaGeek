@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -68,6 +69,10 @@ public class QuestionFragment extends Fragment{
     private LinearLayout mAdContainer;
     private LayoutInflater mLayoutInflater;
     private LinearLayout.LayoutParams mParams;
+    private LinearLayout mGameContainer;
+    private LinearLayout mFirstRowContainer;
+    private LinearLayout mSecondRowContainer;
+    private LinearLayout mThirdRowContainer;
 
     private int mQId = 0;
     private int wordLength;
@@ -112,7 +117,7 @@ public class QuestionFragment extends Fragment{
 
         private void setAnswerSymbol(GameCell gameCell){
             mGameCell = gameCell;
-            mAnswerSymbol = gameCell.mGameSymbol;
+            mAnswerSymbol = gameCell.getGameSymbol();
             mAnswerTextView.setText(String.valueOf(mAnswerSymbol));
         }
 
@@ -155,51 +160,51 @@ public class QuestionFragment extends Fragment{
         }
     }
 
-    private class GameCell implements View.OnClickListener{
-        private TextView mGameTextView;
-        private char mGameSymbol;
-        private boolean isClicked = false;
-        private boolean isRightSymbol = false;
-
-        private GameCell(TextView textView){
-            mGameTextView = textView;
-            mGameTextView.setOnClickListener(this);
-        }
-
-        private void setGameSymbol(char symbol){
-            mGameSymbol = symbol;
-            mGameTextView.setText(String.valueOf(mGameSymbol));
-        }
-
-        private void showCell(){
-            mGameTextView.setVisibility(View.VISIBLE);
-            isClicked = false;
-        }
-
-        private void hideCell(){
-            if (!isClicked){
-                mGameTextView.setVisibility(View.INVISIBLE);
-            }
-        }
-
-        @Override
-        public void onClick(View view){
-            mSoundRep.playSound(mSoundRep.getButtonClickSound());
-            if (useSecondHint) setDefaultImageSecondHint();
-            for(AnswerCell answerCell: mAnswerCells){
-                if (answerCell.isEmpty()){
-                    if (!isClicked){
-                        answerCell.setAnswerSymbol(this);
-                        hideCell();
-                        isClicked = true;
-                        checkForWin();
-                        return;
-                    }
-                    return;
-                }
-            }
-        }
-    }
+//    private class GameCell implements View.OnClickListener{
+//        private TextView mGameTextView;
+//        private char mGameSymbol;
+//        private boolean isClicked = false;
+//        private boolean isRightSymbol = false;
+//
+//        private GameCell(TextView textView){
+//            mGameTextView = textView;
+//            mGameTextView.setOnClickListener(this);
+//        }
+//
+//        private void setGameSymbol(char symbol){
+//            mGameSymbol = symbol;
+//            mGameTextView.setText(String.valueOf(mGameSymbol));
+//        }
+//
+//        private void showCell(){
+//            mGameTextView.setVisibility(View.VISIBLE);
+//            isClicked = false;
+//        }
+//
+//        private void hideCell(){
+//            if (!isClicked){
+//                mGameTextView.setVisibility(View.INVISIBLE);
+//            }
+//        }
+//
+//        @Override
+//        public void onClick(View view){
+//            mSoundRep.playSound(mSoundRep.getButtonClickSound());
+//            if (useSecondHint) setDefaultImageSecondHint();
+//            for(AnswerCell answerCell: mAnswerCells){
+//                if (answerCell.isEmpty()){
+//                    if (!isClicked){
+//                        answerCell.setAnswerSymbol(this);
+//                        hideCell();
+//                        isClicked = true;
+//                        checkForWin();
+//                        return;
+//                    }
+//                    return;
+//                }
+//            }
+//        }
+//    }
 
     public static QuestionFragment newInstance(String category){
         Bundle bundle = new Bundle();
@@ -240,6 +245,7 @@ public class QuestionFragment extends Fragment{
 
     private void initViewComponents(View view){
         setRewardedVideo();
+        mGameCells = new ArrayList<>(MAX_CELLS_COUNT);
         mAnswerContainer = view.findViewById(R.id.answer_container);
         mQuestionTitle = view.findViewById(R.id.question_number);
         mQuestionText = view.findViewById(R.id.question_text);
@@ -327,7 +333,7 @@ public class QuestionFragment extends Fragment{
     private void setRandomGameField(){
         for(GameCell gameCell: mGameCells){
             gameCell.setGameSymbol(ALPHABET.charAt(mRandom.nextInt(ALPHABET_SIZE)));
-            gameCell.isRightSymbol = false;
+            gameCell.setRightSymbol(false);
         }
     }
 
@@ -349,25 +355,51 @@ public class QuestionFragment extends Fragment{
     }
 
     private void initGameField(View v){
-        mGameCells = new ArrayList<>(MAX_CELLS_COUNT);
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_1)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_2)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_3)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_4)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_5)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_6)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_7)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_8)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_9)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_10)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_11)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_12)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_13)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_14)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_15)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_16)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_17)));
-        mGameCells.add(new GameCell((TextView) v.findViewById(R.id.game_cell_18)));
+        mGameContainer = v.findViewById(R.id.game_cell_container);
+        mFirstRowContainer = v.findViewById(R.id.first_row_container);
+        mSecondRowContainer = v.findViewById(R.id.second_row_container);
+        mThirdRowContainer = v.findViewById(R.id.third_row_container);
+
+        mFirstRowContainer.removeAllViews();
+        mSecondRowContainer.removeAllViews();
+        mThirdRowContainer.removeAllViews();
+
+        setRowContainer(mFirstRowContainer);
+        setRowContainer(mSecondRowContainer);
+        setRowContainer(mThirdRowContainer);
+    }
+
+    private void setRowContainer(LinearLayout linearLayout){
+        LinearLayout.LayoutParams mGameParams = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 1.0f);
+        for (int i = 0; i < 6; i++){
+            final GameCell gameCell = new GameCell(getActivity());
+            mGameParams.setMargins(3, 3, 3, 3);
+            gameCell.setLayoutParams(mGameParams);
+            gameCell.setMinEms(1);
+            gameCell.setTextSize(22);
+            gameCell.setTextColor(ContextCompat.getColor(getContext(), R.color.textColor));
+            linearLayout.addView(gameCell);
+            mGameCells.add(gameCell);
+            gameCell.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mSoundRep.playSound(mSoundRep.getButtonClickSound());
+                    if (useSecondHint) setDefaultImageSecondHint();
+                    for(AnswerCell answerCell: mAnswerCells){
+                        if (answerCell.isEmpty()){
+                            if (!gameCell.isClicked()){
+                                answerCell.setAnswerSymbol(gameCell);
+                                gameCell.hideCell();
+                                gameCell.setClicked(true);
+                                checkForWin();
+                                return;
+                            }
+                            return;
+                        }
+                    }
+                }
+            });
+        }
     }
 
     private void saveId(){
@@ -385,7 +417,7 @@ public class QuestionFragment extends Fragment{
         }
         Collections.shuffle(NUMBERS);
         for (int i = 0; i < word.length(); i++) {
-            (mGameCells.get((NUMBERS.get(i)))).isRightSymbol = true;
+            (mGameCells.get((NUMBERS.get(i)))).setRightSymbol(true);
             (mGameCells.get((NUMBERS.get(i)))).setGameSymbol(word.charAt(i));
         }
     }
@@ -494,7 +526,7 @@ public class QuestionFragment extends Fragment{
                 answerCell.clearAnswerCell();
             }
             for (GameCell gameCell : mGameCells) {
-                if (!gameCell.isRightSymbol) gameCell.hideCell();
+                if (!gameCell.isRightSymbol()) gameCell.hideCell();
             }
             mPoints.useFirstHint();
             mHintTitle.setText(getString(R.string.hints_title, mPoints.getCurrentPoints()));
@@ -576,20 +608,20 @@ public class QuestionFragment extends Fragment{
     private void hidePickCell(char correctSymbol){
         boolean temp = true;
         for(GameCell gameCell: mGameCells){
-            if (gameCell.mGameSymbol == correctSymbol && !gameCell.isClicked && gameCell.isRightSymbol){
+            if (gameCell.getGameSymbol() == correctSymbol && !gameCell.isClicked() && gameCell.isRightSymbol()){
                 gameCell.hideCell();
-                gameCell.isClicked = true;
+                gameCell.setClicked(true);
                 temp = false;
                 break;
             }
         }
         if (temp){
             for(AnswerCell answerCell: mAnswerCells){
-                if (answerCell.mGameCell != null && answerCell.mAnswerSymbol == correctSymbol && answerCell.mGameCell.isRightSymbol){
+                if (answerCell.mGameCell != null && answerCell.mAnswerSymbol == correctSymbol && answerCell.mGameCell.isRightSymbol()){
                     GameCell gameCell = answerCell.mGameCell;
                     answerCell.clearAnswerCell();
                     gameCell.hideCell();
-                    gameCell.isClicked = true;
+                    gameCell.setClicked(true);
                     break;
                 }
             }
