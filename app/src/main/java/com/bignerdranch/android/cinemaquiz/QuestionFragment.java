@@ -686,7 +686,7 @@ public class QuestionFragment extends Fragment{
     private void showDialogForBonus(){
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
         alertDialog.setTitle(getString(R.string.dialog_title));
-        alertDialog.setMessage(getString(R.string.dialog_message));
+        alertDialog.setMessage(getString(R.string.dialog_bonus_message));
         alertDialog.setCancelable(true);
         alertDialog.setPositiveButton(getString(R.string.positive_button), new DialogInterface.OnClickListener() {
             @Override

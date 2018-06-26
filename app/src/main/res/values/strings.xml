@@ -2,7 +2,7 @@
     <string name="app_name">Викторина Киногик</string>
     <string name="start_btn_text">ИГРАТЬ</string>
     <string name="rules_btn_text">ПРАВИЛА</string>
-    <string name="faq_btn_text">КОНТАКТЫ</string>
+    <string name="faq_btn_text">FAQ</string>
     <string name="first_hint">Убрать лишние</string>
     <string name="second_hint">Показать букву</string>
     <string name="bonus_hint">БОНУС +10</string>
@@ -10,7 +10,8 @@
     <string name="main_title">ВИКТОРИНА\nКИНОГИК</string>
     <string name="description_sound">ЗВУК</string>
     <string name="dialog_title">Проверка на случайное нажатие.</string>
-    <string name="dialog_message">Получить +10 подсказок за просмотр рекламы?</string>
+    <string name="dialog_bonus_message">Получить +10 подсказок за просмотр рекламы?</string>
+    <string name="dialog_rate_message">Перейти на страницу приложения в Play Market?</string>
     <string name="positive_button">Да</string>
     <string name="negative_button">Назад</string>
     <string name="hints_title">Подсказок %1$d</string>

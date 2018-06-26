@@ -6,11 +6,11 @@ public class Points {
 
     private SharedPreferences mPref;
 
-    private static final int POINTS_FOR_WIN = 3;
+    private static final int POINTS_FOR_WIN = 2;
     private static final int PRICE_FIRST_HINT = 10;
     private static final int POINTS_FOR_BONUS = 10;
     private static final int PRICE_SECOND_HINT = 1;
-    private static final int POINTS_START_GAME = 15;
+    private static final int POINTS_START_GAME = 13;
     private static final String KEY_POINTS = "points";
 
     public Points(SharedPreferences sharedPreferences){

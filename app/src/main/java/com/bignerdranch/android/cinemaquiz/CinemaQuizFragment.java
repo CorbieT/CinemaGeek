@@ -1,16 +1,23 @@
 package com.bignerdranch.android.cinemaquiz;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class CinemaQuizFragment extends Fragment{
 
@@ -22,6 +29,8 @@ public class CinemaQuizFragment extends Fragment{
     private TextView mFaqButton;
 
     private ImageButton mSoundButton;
+    private ImageButton mRateButton;
+
     private boolean isSound;
     private SharedPreferences mPref;
 
@@ -70,6 +79,14 @@ public class CinemaQuizFragment extends Fragment{
             }
         });
 
+        mRateButton = view.findViewById(R.id.rate_button);
+        mRateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialogForRate();
+            }
+        });
+
         mSoundButton = view.findViewById(R.id.sound_button);
         setSoundImage();
         mSoundButton.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +106,46 @@ public class CinemaQuizFragment extends Fragment{
     }
 
     private void setSoundImage(){
-        if (!isSound)  mSoundButton.setImageResource(R.drawable.sound_off);
-        else  mSoundButton.setImageResource(R.drawable.sound_on);
+        if (!isSound)  mSoundButton.setImageResource(R.drawable.volume_off);
+        else  mSoundButton.setImageResource(R.drawable.volume_on);
+    }
+
+    private boolean isActivityStarted(Intent intent){
+        try{
+            startActivity(intent);
+            return true;
+        }catch (ActivityNotFoundException e){
+            return false;
+        }
+    }
+
+    private void showDialogForRate(){
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        alertDialog.setTitle(getString(R.string.dialog_title));
+        alertDialog.setMessage(getString(R.string.dialog_rate_message));
+        alertDialog.setCancelable(true);
+        alertDialog.setPositiveButton(getString(R.string.positive_button), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                rateThisApp();
+            }
+        });
+        alertDialog.setNegativeButton(getString(R.string.negative_button), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void rateThisApp(){
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("market://details?id=com.bignerdranch.android.cinemaquiz"));
+        if(isActivityStarted(intent)){
+            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.bignerdranch.android.cinemaquiz"));
+        }else{
+            Toast.makeText(getActivity(), "Could not open Android market, please check if the market app installed or not. Try again later", Toast.LENGTH_SHORT).show();
+        }
     }
 }

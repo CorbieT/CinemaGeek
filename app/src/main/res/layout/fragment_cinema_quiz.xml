@@ -19,7 +19,7 @@
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="#ffffff"
-        android:textSize="36sp"/>
+        android:textSize="42sp"/>
 
     <TextView
         android:id="@+id/start_button"
@@ -28,12 +28,12 @@
         android:layout_alignParentTop="true"
         android:layout_below="@+id/main_title"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="145dp"
+        android:layout_marginTop="155dp"
         android:clickable="true"
         android:fontFamily="serif"
         android:text="@string/start_btn_text"
         android:textColor="#ffffff"
-        android:textSize="36sp"/>
+        android:textSize="42sp"/>
 
     <TextView
         android:id="@+id/rules_button"
@@ -46,7 +46,7 @@
         android:fontFamily="serif"
         android:text="@string/rules_btn_text"
         android:textColor="#ffffff"
-        android:textSize="36sp"/>
+        android:textSize="42sp"/>
 
     <TextView
         android:id="@+id/faq_button"
@@ -59,16 +59,27 @@
         android:fontFamily="serif"
         android:text="@string/faq_btn_text"
         android:textColor="#ffffff"
-        android:textSize="36sp"/>
+        android:textSize="42sp"/>
 
     <ImageButton
         android:id="@+id/sound_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/start_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/start_button"
         android:background="@android:color/transparent"
         android:contentDescription="@string/description_sound"
-        app:srcCompat="@drawable/sound_on"
+        app:srcCompat="@drawable/volume_on"/>
+
+    <ImageButton
+        android:id="@+id/rate_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/start_button"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_alignStart="@+id/start_button"
+        android:background="@android:color/transparent"
+        app:srcCompat="@drawable/rate_icon"/>
 
 </RelativeLayout>

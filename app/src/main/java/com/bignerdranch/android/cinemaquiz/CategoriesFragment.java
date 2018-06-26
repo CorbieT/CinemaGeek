@@ -11,6 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
  
@@ -49,6 +52,8 @@ public class CategoriesFragment extends Fragment{
 
     private class CategoryHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView mTitleTextView;
+        private FrameLayout mFrameLayout;
+        private ImageView mImageView;
 
         @Override
         public void onClick(View view){
@@ -61,6 +66,8 @@ public class CategoriesFragment extends Fragment{
             super(itemView);
             itemView.setOnClickListener(this);
             mTitleTextView = itemView.findViewById(R.id.list_categories_title_text_view);
+            mFrameLayout = itemView.findViewById(R.id.list_container);
+            mImageView = itemView.findViewById(R.id.category_icon);
         }
     }
 
@@ -86,13 +93,45 @@ public class CategoriesFragment extends Fragment{
 
             SharedPreferences mPref = getActivity().getSharedPreferences(QuestionFragment.APP_TAG, Context.MODE_PRIVATE);
             isComplete = mPref.getBoolean(category.getTitle() + "_complete", false);
-            if (isComplete) holder.mTitleTextView.setBackgroundResource(R.drawable.category_list_complete);
-            else holder.mTitleTextView.setBackgroundResource(R.drawable.category_list);
+            if(isComplete) holder.mFrameLayout.setBackgroundResource(R.drawable.category_list_complete);
+            else holder.mFrameLayout.setBackgroundResource(R.drawable.category_list);
+            setCategoryIcon(category, holder.mImageView);
         }
 
         @Override
         public int getItemCount(){
             return mCategoryList.size();
+        }
+    }
+
+    private void setCategoryIcon(Category category, ImageView imageView){
+        switch (category.getTitle()){
+            case "УЖАСЫ": imageView.setImageResource(R.drawable.horror);
+                break;
+            case "КОМЕДИИ": imageView.setImageResource(R.drawable.comedy);
+                break;
+            case "СЕРИАЛЫ": imageView.setImageResource(R.drawable.serials);
+                break;
+            case "МУЛЬТФИЛЬМЫ": imageView.setImageResource(R.drawable.cartoons1);
+                break;
+            case "ДРАМЫ": imageView.setImageResource(R.drawable.drama);
+                break;
+            case "ГОЛОВОЛОМКИ": imageView.setImageResource(R.drawable.puzzle);
+                break;
+            case "РОССИЙСКИЙ/СССР": imageView.setImageResource(R.drawable.russia);
+                break;
+            case "СОЛЯНКА": imageView.setImageResource(R.drawable.saltwort_1);
+                break;
+            case "СУПЕР": imageView.setImageResource(R.drawable.superhero);
+                break;
+            case "СОЛЯНКА-2": imageView.setImageResource(R.drawable.saltwort_2);
+                break;
+            case "АКТЕРСКИЙ СОСТАВ": imageView.setImageResource(R.drawable.staff);
+                break;
+            case "КИНОГИК": imageView.setImageResource(R.drawable.geek);
+                break;
+            case "ТАК ГОВОРИЛ": imageView.setImageResource(R.drawable.said_so);
+                break;
         }
     }
 
