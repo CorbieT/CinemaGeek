@@ -42,22 +42,26 @@ import java.util.Random;
 
 public class QuestionFragment extends Fragment{
 
+    private TextView mHintTitle;
     private TextView mQuestionText;
     private TextView mQuestionTitle;
-    private TextView mHintTitle;
+
     private Button mNextButton;
     private Button mButtonHint1;
     private Button mButtonHint2;
     private Button mButtonBonus;
+
     private ScrollView mScrollView;
 
-    public static final String CATEGORY_TAG = "CATEGORY_TITLE";
     public static final String APP_TAG = "cinema_quiz";
     public static final String AD_COUNTER_TAG = "ad_counter";
+    public static final String CATEGORY_TAG = "CATEGORY_TITLE";
     public static final String ALPHABET = "ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ";
+
     public static final int MAX_CELLS_COUNT = 18;
     public static final int ALPHABET_SIZE = ALPHABET.length();
     public static final int WRAP_CONTENT = LinearLayout.LayoutParams.WRAP_CONTENT;
+
     private static final char EMPTY = ' ';
 
     private List<GameCell> mGameCells;
@@ -68,7 +72,6 @@ public class QuestionFragment extends Fragment{
     private LinearLayout mAnswerContainer;
     private LinearLayout mAdContainer;
     private LinearLayout.LayoutParams mParams;
-    private LinearLayout mGameContainer;
     private LinearLayout mFirstRowContainer;
     private LinearLayout mSecondRowContainer;
     private LinearLayout mThirdRowContainer;
@@ -143,13 +146,13 @@ public class QuestionFragment extends Fragment{
             }
         });
         mButtonHint1 = view.findViewById(R.id.hint_1);
-        mButtonHint2 = view.findViewById(R.id.hint_2);
         mButtonHint1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 useHint1();
             }
         });
+        mButtonHint2 = view.findViewById(R.id.hint_2);
         mButtonHint2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -234,7 +237,6 @@ public class QuestionFragment extends Fragment{
     }
 
     private void initGameField(View v){
-        mGameContainer = v.findViewById(R.id.game_cell_container);
         mFirstRowContainer = v.findViewById(R.id.first_row_container);
         mSecondRowContainer = v.findViewById(R.id.second_row_container);
         mThirdRowContainer = v.findViewById(R.id.third_row_container);
@@ -259,20 +261,17 @@ public class QuestionFragment extends Fragment{
             gameCell.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mSoundRep.playSound(mSoundRep.getButtonClickSound());
-                    if (useSecondHint) setDefaultImageSecondHint();
-                    for(AnswerCell answerCell: mAnswerCells){
-                        if (answerCell.isEmpty()){
-                            if (!gameCell.isClicked()){
-                                answerCell.setAnswerSymbol(gameCell);
-                                gameCell.hideCell();
-                                gameCell.setClicked(true);
-                                checkForWin();
-                                return;
-                            }
-                            return;
-                        }
+                mSoundRep.playSound(mSoundRep.getButtonClickSound());
+                if (useSecondHint) setDefaultImageSecondHint();
+                for(AnswerCell answerCell: mAnswerCells){
+                    if (answerCell.isEmpty() && !gameCell.isClicked()){
+                        answerCell.setAnswerSymbol(gameCell);
+                        gameCell.hideCell();
+                        gameCell.setClicked(true);
+                        checkForWin();
+                        return;
                     }
+                }
                 }
             });
         }
