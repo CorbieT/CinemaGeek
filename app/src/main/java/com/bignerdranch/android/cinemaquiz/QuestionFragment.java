@@ -536,7 +536,7 @@ public class QuestionFragment extends Fragment{
     private void setInterstitialAd(){
         mAdCounter = mPref.getInt(AD_COUNTER_TAG, 0);
         mInterstitialAd = new InterstitialAd(getActivity());
-        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_id));
+        mInterstitialAd.setAdUnitId(getString(R.string.test_interstitial_id));
         AdRequest adRequest = new AdRequest.Builder().build();
         mInterstitialAd.loadAd(adRequest);
         mInterstitialAd.setAdListener(new AdListener() {
@@ -599,6 +599,11 @@ public class QuestionFragment extends Fragment{
             public void onRewardedVideoAdFailedToLoad(int i) {
 
             }
+
+            @Override
+            public void onRewardedVideoCompleted() {
+
+            }
         };
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getActivity());
         mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
@@ -606,7 +611,7 @@ public class QuestionFragment extends Fragment{
     }
 
     private void loadRewardVideo(){
-        mRewardedVideoAd.loadAd(getString(R.string.rewarded_video_id), new AdRequest.Builder().build());
+        mRewardedVideoAd.loadAd(getString(R.string.test_rewarded_video_id), new AdRequest.Builder().build());
     }
 
     private void showDialogForBonus(){
@@ -634,7 +639,7 @@ public class QuestionFragment extends Fragment{
     private void setBanner(){
         final AdView mAdView = new AdView(getActivity());
         mAdView.setAdSize(AdSize.BANNER);
-        mAdView.setAdUnitId(getString(R.string.banner_id));
+        mAdView.setAdUnitId(getString(R.string.test_banner_id));
         mAdView.loadAd(new AdRequest.Builder().build());
         mAdView.setAdListener(new AdListener(){
             @Override
