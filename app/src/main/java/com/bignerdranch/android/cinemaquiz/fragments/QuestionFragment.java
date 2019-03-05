@@ -1,4 +1,4 @@
-package com.bignerdranch.android.cinemaquiz;
+package com.bignerdranch.android.cinemaquiz.fragments;
 
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
@@ -22,6 +22,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bignerdranch.android.cinemaquiz.model.AnswerCell;
+import com.bignerdranch.android.cinemaquiz.model.GameCell;
+import com.bignerdranch.android.cinemaquiz.model.Points;
+import com.bignerdranch.android.cinemaquiz.model.Question;
+import com.bignerdranch.android.cinemaquiz.R;
+import com.bignerdranch.android.cinemaquiz.common.SoundRep;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;

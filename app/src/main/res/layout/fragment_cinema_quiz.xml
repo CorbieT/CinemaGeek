@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/main_menu_bg"
-    tools:context="com.bignerdranch.android.cinemaquiz.CinemaQuizActivity">
+    tools:context="com.bignerdranch.android.cinemaquiz.activities.CinemaQuizActivity">
 
     <TextView
         android:id="@+id/main_title"

@@ -1,4 +1,4 @@
-package com.bignerdranch.android.cinemaquiz;
+package com.bignerdranch.android.cinemaquiz.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bignerdranch.android.cinemaquiz.R;
 
 import org.xmlpull.v1.XmlPullParser;
 

@@ -1,4 +1,4 @@
-package com.bignerdranch.android.cinemaquiz;
+package com.bignerdranch.android.cinemaquiz.utils;
 
 import android.content.Context;
 import android.graphics.Typeface;

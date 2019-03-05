@@ -1,4 +1,4 @@
-package com.bignerdranch.android.cinemaquiz;
+package com.bignerdranch.android.cinemaquiz.model;
 
 import java.util.UUID;
 

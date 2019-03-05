@@ -1,4 +1,4 @@
-package com.bignerdranch.android.cinemaquiz;
+package com.bignerdranch.android.cinemaquiz.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,6 +15,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bignerdranch.android.cinemaquiz.model.Category;
+import com.bignerdranch.android.cinemaquiz.R;
+import com.bignerdranch.android.cinemaquiz.utils.SingletonFonts;
 
 import org.xmlpull.v1.XmlPullParser;
 

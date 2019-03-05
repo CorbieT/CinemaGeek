@@ -1,4 +1,4 @@
-package com.bignerdranch.android.cinemaquiz;
+package com.bignerdranch.android.cinemaquiz.common;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -10,6 +10,9 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
 import android.widget.Toast;
+
+import com.bignerdranch.android.cinemaquiz.fragments.CinemaQuizFragment;
+import com.bignerdranch.android.cinemaquiz.fragments.QuestionFragment;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package com.bignerdranch.android.cinemaquiz;
+package com.bignerdranch.android.cinemaquiz.fragments;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -17,6 +17,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bignerdranch.android.cinemaquiz.R;
+import com.bignerdranch.android.cinemaquiz.utils.SingletonFonts;
 
 public class CinemaQuizFragment extends Fragment{
 
