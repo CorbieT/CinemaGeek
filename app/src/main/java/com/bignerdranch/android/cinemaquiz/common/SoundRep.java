@@ -11,7 +11,7 @@ import android.media.SoundPool;
 import android.os.Build;
 import android.widget.Toast;
 
-import com.bignerdranch.android.cinemaquiz.fragments.CinemaQuizFragment;
+import com.bignerdranch.android.cinemaquiz.fragments.MainFragment;
 import com.bignerdranch.android.cinemaquiz.fragments.QuestionFragment;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class SoundRep {
     public SoundRep(Context context){
         mContext = context;
         SharedPreferences mPref = context.getSharedPreferences(QuestionFragment.APP_TAG, Context.MODE_PRIVATE);
-        isSound = mPref.getBoolean(CinemaQuizFragment.KEY_SOUND, true);
+        isSound = mPref.getBoolean(MainFragment.KEY_SOUND, true);
         loadSoundPool();
     }
 
