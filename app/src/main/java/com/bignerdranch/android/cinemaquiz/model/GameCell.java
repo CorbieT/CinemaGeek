@@ -9,7 +9,7 @@ import com.bignerdranch.android.cinemaquiz.R;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 
-public class GameCell extends AppCompatTextView{
+public class GameCell extends AppCompatTextView {
 
     private char mGameSymbol;
     private boolean isClicked = false;
@@ -49,13 +49,13 @@ public class GameCell extends AppCompatTextView{
         isClicked = clicked;
     }
 
-    public void showCell(){
+    public void showCell() {
         this.setVisibility(View.VISIBLE);
         isClicked = false;
     }
 
-    public void hideCell(){
-        if(!isClicked)
+    public void hideCell() {
+        if (!isClicked)
             this.setVisibility(View.INVISIBLE);
     }
 }

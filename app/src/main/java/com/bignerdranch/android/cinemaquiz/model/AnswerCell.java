@@ -9,7 +9,7 @@ import com.bignerdranch.android.cinemaquiz.R;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 
-public class AnswerCell extends AppCompatTextView{
+public class AnswerCell extends AppCompatTextView {
 
     private static final char EMPTY = ' ';
 
@@ -35,12 +35,12 @@ public class AnswerCell extends AppCompatTextView{
         setEmpty();
     }
 
-    private void setEmpty(){
+    private void setEmpty() {
         mAnswerSymbol = EMPTY;
         setText(String.valueOf(mAnswerSymbol));
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return mAnswerSymbol == EMPTY;
     }
 
@@ -54,19 +54,19 @@ public class AnswerCell extends AppCompatTextView{
         this.setText(String.valueOf(mAnswerSymbol));
     }
 
-    public void showCorrectSymbol(){
+    public void showCorrectSymbol() {
         mAnswerSymbol = mCorrectSymbol;
         setText(String.valueOf(mAnswerSymbol));
         setTextColor(ContextCompat.getColor(getContext(), R.color.isClickedButton));
         setBackgroundResource(R.drawable.bottom_stroke_green);
     }
 
-    public boolean compareAnswerSymbols(){
+    public boolean compareAnswerSymbols() {
         return mAnswerSymbol == mCorrectSymbol;
     }
 
-    public void clearAnswerCell(){
-        if (this.mGameCell != null){
+    public void clearAnswerCell() {
+        if (this.mGameCell != null) {
             this.mGameCell.showCell();
             setEmpty();
             this.mGameCell = null;

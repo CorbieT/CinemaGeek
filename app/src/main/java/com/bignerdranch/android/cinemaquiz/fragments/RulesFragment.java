@@ -14,12 +14,18 @@ import org.xmlpull.v1.XmlPullParser;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
-public class RulesFragment extends Fragment{
+public class RulesFragment extends Fragment {
 
-    private TextView mRulesTextView;
+    @BindView(R.id.rules_text_view)
+    TextView mRulesTextView;
 
-    public static RulesFragment newInstance(){
+    private Unbinder unbinder;
+
+    public static RulesFragment newInstance() {
         return new RulesFragment();
     }
 
@@ -27,24 +33,30 @@ public class RulesFragment extends Fragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.rules_fragment, container, false);
-        mRulesTextView = view.findViewById(R.id.rules_text_view);
+        unbinder = ButterKnife.bind(this, view);
         parseRules();
         return view;
     }
 
-    private void parseRules(){
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    private void parseRules() {
         try {
             XmlPullParser parser = getResources().getXml(R.xml.rules);
-            while (parser.getEventType() != XmlPullParser.END_DOCUMENT){
-                if(parser.getEventType() == XmlPullParser.START_TAG
-                        && parser.getName().equals("rules")){
-                    if(parser.next() == XmlPullParser.TEXT){
+            while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+                if (parser.getEventType() == XmlPullParser.START_TAG
+                        && parser.getName().equals("rules")) {
+                    if (parser.next() == XmlPullParser.TEXT) {
                         mRulesTextView.setText(parser.getText());
                     }
                 }
                 parser.next();
             }
-        }catch (Throwable t){
+        } catch (Throwable t) {
             Toast.makeText(getActivity(), "Error loading XML document: " + t.toString(), Toast.LENGTH_LONG)
                     .show();
         }

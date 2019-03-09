@@ -26,7 +26,8 @@ public class SingletonFonts {
 
     private static volatile SingletonFonts instance;
 
-    private SingletonFonts() {}
+    private SingletonFonts() {
+    }
 
     public static SingletonFonts getInstance(Context activity) {
         SingletonFonts localInstance = instance;

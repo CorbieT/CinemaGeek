@@ -24,8 +24,6 @@ import com.bignerdranch.android.cinemaquiz.model.Points;
 import com.bignerdranch.android.cinemaquiz.model.Question;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
@@ -45,19 +43,51 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
-public class QuestionFragment extends Fragment{
+public class QuestionFragment extends Fragment {
 
-    private TextView mHintTitle;
-    private TextView mQuestionText;
-    private TextView mQuestionTitle;
+    @BindView(R.id.hint_count)
+    TextView mHintTitle;
 
-    private Button mNextButton;
-    private Button mButtonHint1;
-    private Button mButtonHint2;
-    private Button mButtonBonus;
+    @BindView(R.id.question_text)
+    TextView mQuestionText;
 
-    private ScrollView mScrollView;
+    @BindView(R.id.question_number)
+    TextView mQuestionTitle;
+
+    @BindView(R.id.next_button)
+    Button mNextButton;
+
+    @BindView(R.id.hint_1)
+    Button mButtonHint1;
+
+    @BindView(R.id.hint_2)
+    Button mButtonHint2;
+
+    @BindView(R.id.hint_bonus)
+    Button mButtonBonus;
+
+    @BindView(R.id.scroll_view)
+    ScrollView mScrollView;
+
+    @BindView(R.id.answer_container)
+    LinearLayout mAnswerContainer;
+
+    @BindView(R.id.first_row_container)
+    LinearLayout mFirstRowContainer;
+
+    @BindView(R.id.second_row_container)
+    LinearLayout mSecondRowContainer;
+
+    @BindView(R.id.third_row_container)
+    LinearLayout mThirdRowContainer;
+
+    private Unbinder unbinder;
+
+    private LinearLayout.LayoutParams mParams;
 
     public static final String APP_TAG = "cinema_quiz";
     public static final String AD_COUNTER_TAG = "ad_counter";
@@ -75,13 +105,6 @@ public class QuestionFragment extends Fragment{
     private List<Question> mQuestions = new ArrayList<>();
     private final List<Integer> NUMBERS = new ArrayList<>(MAX_CELLS_COUNT);
 
-    private LinearLayout mAnswerContainer;
-    private LinearLayout mAdContainer;
-    private LinearLayout.LayoutParams mParams;
-    private LinearLayout mFirstRowContainer;
-    private LinearLayout mSecondRowContainer;
-    private LinearLayout mThirdRowContainer;
-
     private int mQId = 0;
     private int wordLength;
     private int mAdCounter;
@@ -95,7 +118,7 @@ public class QuestionFragment extends Fragment{
     private InterstitialAd mInterstitialAd;
     private RewardedVideoAd mRewardedVideoAd;
 
-    public static QuestionFragment newInstance(String category){
+    public static QuestionFragment newInstance(String category) {
         Bundle bundle = new Bundle();
         bundle.putString(CATEGORY_TAG, category);
         QuestionFragment fragment = new QuestionFragment();
@@ -107,11 +130,18 @@ public class QuestionFragment extends Fragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.question_fragment, container, false);
+        unbinder = ButterKnife.bind(this, view);
         initViewComponents(view);
         parseDocument();
         updateContent();
         setNextButtonBackground();
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override
@@ -132,25 +162,16 @@ public class QuestionFragment extends Fragment{
         super.onDestroy();
     }
 
-    private void initViewComponents(View view){
+    private void initViewComponents(View view) {
         setRewardedVideo();
         mGameCells = new ArrayList<>(MAX_CELLS_COUNT);
-        mAnswerContainer = view.findViewById(R.id.answer_container);
-        mQuestionTitle = view.findViewById(R.id.question_number);
-        mQuestionText = view.findViewById(R.id.question_text);
-        mScrollView = view.findViewById(R.id.scroll_view);
-        mNextButton = view.findViewById(R.id.next_button);
-        mHintTitle = view.findViewById(R.id.hint_count);
-        mButtonBonus = view.findViewById(R.id.hint_bonus);
         mButtonBonus.setEnabled(false);
         mButtonBonus.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.disabled_bonus_button));
         mButtonBonus.setOnClickListener(view1 -> {
             if (useSecondHint) setDefaultImageSecondHint();
             showDialogForBonus();
         });
-        mButtonHint1 = view.findViewById(R.id.hint_1);
         mButtonHint1.setOnClickListener(view12 -> useHint1());
-        mButtonHint2 = view.findViewById(R.id.hint_2);
         mButtonHint2.setOnClickListener(view13 -> useHint2());
         mNextButton.setOnClickListener(view14 -> animationHideNextButton());
         mPref = Objects.requireNonNull(getActivity()).getSharedPreferences(APP_TAG, Context.MODE_PRIVATE);
@@ -158,36 +179,43 @@ public class QuestionFragment extends Fragment{
         mSoundRep = new SoundRep(getContext());
         mPoints = new Points(mPref);
         setInterstitialAd();
-        setBanner();
-        initGameField(view);
+        initGameField();
         initNumb();
     }
 
-    private void setNextButtonBackground(){
-        switch (category){
-            case "УЖАСЫ": mNextButton.setBackgroundResource(R.drawable.smiley_blood_bg);
+    private void setNextButtonBackground() {
+        switch (category) {
+            case "УЖАСЫ":
+                mNextButton.setBackgroundResource(R.drawable.smiley_blood_bg);
                 break;
-            case "ГОЛОВОЛОМКИ": mNextButton.setBackgroundResource(R.drawable.smiley_puzzle);
+            case "ГОЛОВОЛОМКИ":
+                mNextButton.setBackgroundResource(R.drawable.smiley_puzzle);
                 break;
-            case "КИНОГИК": mNextButton.setBackgroundResource(R.drawable.smiley_geek_bg);
+            case "КИНОГИК":
+                mNextButton.setBackgroundResource(R.drawable.smiley_geek_bg);
                 break;
-            case "СУПЕР": mNextButton.setBackgroundResource(R.drawable.smiley_haha_bg);
+            case "СУПЕР":
+                mNextButton.setBackgroundResource(R.drawable.smiley_haha_bg);
                 break;
-            default: mNextButton.setBackgroundResource(R.drawable.smiley_bg);
+            default:
+                mNextButton.setBackgroundResource(R.drawable.smiley_bg);
         }
     }
 
-    private void setPuzzleNextButton(){
-        switch (category){
-            case "СОЛЯНКА-2": if (mQId == 32) mNextButton.setBackgroundResource(R.drawable.smiley_evolution_bg);
+    private void setPuzzleNextButton() {
+        switch (category) {
+            case "СОЛЯНКА-2":
+                if (mQId == 32) mNextButton.setBackgroundResource(R.drawable.smiley_evolution_bg);
                 break;
-            case "СУПЕР": if (mQId == 27) mNextButton.setBackgroundResource(R.drawable.smiley_false_god_bg);
+            case "СУПЕР":
+                if (mQId == 27) mNextButton.setBackgroundResource(R.drawable.smiley_false_god_bg);
                 break;
-            case "СЕРИАЛЫ": if (mQId == 9) mNextButton.setBackgroundResource(R.drawable.smiley_missme_bg);
+            case "СЕРИАЛЫ":
+                if (mQId == 9) mNextButton.setBackgroundResource(R.drawable.smiley_missme_bg);
         }
     }
 
-    private void updateContent(){
+    private void updateContent() {
         mQuestionTitle.setText(getString(R.string.question_title, mQId + 1));
         mHintTitle.setText(getString(R.string.hints_title, mPoints.getCurrentPoints()));
         mQuestionText.setText(mQuestions.get(mQId).getQuestionText());
@@ -200,34 +228,31 @@ public class QuestionFragment extends Fragment{
         mButtonHint2.setVisibility(View.VISIBLE);
     }
 
-    private void setRandomGameField(){
-        for(GameCell gameCell: mGameCells){
+    private void setRandomGameField() {
+        for (GameCell gameCell : mGameCells) {
             gameCell.setGameSymbol(ALPHABET.charAt(mRandom.nextInt(ALPHABET_SIZE)));
             gameCell.setRightSymbol(false);
         }
     }
 
-    private void showCellsGameField(){
-        for (GameCell gameCell: mGameCells){
+    private void showCellsGameField() {
+        for (GameCell gameCell : mGameCells) {
             gameCell.showCell();
         }
     }
 
     @NonNull
-    private String removeSpaces(String word){
+    private String removeSpaces(String word) {
         StringBuilder noSpaceWord = new StringBuilder();
         for (int i = 0; i < word.length(); i++) {
-            if (word.charAt(i) != EMPTY){
+            if (word.charAt(i) != EMPTY) {
                 noSpaceWord.append(word.charAt(i));
             }
         }
         return noSpaceWord.toString().toUpperCase();
     }
 
-    private void initGameField(View v){
-        mFirstRowContainer = v.findViewById(R.id.first_row_container);
-        mSecondRowContainer = v.findViewById(R.id.second_row_container);
-        mThirdRowContainer = v.findViewById(R.id.third_row_container);
+    private void initGameField() {
 
         mFirstRowContainer.removeAllViews();
         mSecondRowContainer.removeAllViews();
@@ -238,41 +263,41 @@ public class QuestionFragment extends Fragment{
         setRowContainer(mThirdRowContainer);
     }
 
-    private void setRowContainer(LinearLayout linearLayout){
+    private void setRowContainer(LinearLayout linearLayout) {
         LinearLayout.LayoutParams mGameParams = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 1.0f);
         mGameParams.setMargins(3, 3, 3, 3);
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < 6; i++) {
             final GameCell gameCell = new GameCell(getActivity());
             gameCell.setLayoutParams(mGameParams);
             linearLayout.addView(gameCell);
             mGameCells.add(gameCell);
             gameCell.setOnClickListener(view -> {
-            mSoundRep.playSound(mSoundRep.getButtonClickSound());
-            if (useSecondHint) setDefaultImageSecondHint();
-            for(AnswerCell answerCell: mAnswerCells){
-                if (answerCell.isEmpty() && !gameCell.isClicked()){
-                    answerCell.setAnswerSymbol(gameCell);
-                    gameCell.hideCell();
-                    gameCell.setClicked(true);
-                    checkForWin();
-                    return;
+                mSoundRep.playSound(mSoundRep.getButtonClickSound());
+                if (useSecondHint) setDefaultImageSecondHint();
+                for (AnswerCell answerCell : mAnswerCells) {
+                    if (answerCell.isEmpty() && !gameCell.isClicked()) {
+                        answerCell.setAnswerSymbol(gameCell);
+                        gameCell.hideCell();
+                        gameCell.setClicked(true);
+                        checkForWin();
+                        return;
+                    }
                 }
-            }
             });
         }
     }
 
-    private void saveId(){
+    private void saveId() {
         SharedPreferences.Editor editor = mPref.edit();
         editor.putInt(category, mQId).apply();
     }
 
-    private void loadId(){
+    private void loadId() {
         mQId = mPref.getInt(category, 0);
     }
 
-    private void setAnswerInGameField(String word){
-        if (word.length() > MAX_CELLS_COUNT){
+    private void setAnswerInGameField(String word) {
+        if (word.length() > MAX_CELLS_COUNT) {
             throw new IllegalArgumentException("word length it's too long");
         }
         Collections.shuffle(NUMBERS);
@@ -282,7 +307,7 @@ public class QuestionFragment extends Fragment{
         }
     }
 
-    private void createAnswerField(String word){
+    private void createAnswerField(String word) {
         wordLength = word.length();
         if (mAnswerCells == null) mAnswerCells = new ArrayList<>(word.length());
         else mAnswerCells.clear();
@@ -292,13 +317,13 @@ public class QuestionFragment extends Fragment{
         mParams.weight = 1;
 
         for (int i = 0; i < word.length(); i++) {
-            if (word.charAt(i) != EMPTY){
+            if (word.charAt(i) != EMPTY) {
                 final AnswerCell answerCell = new AnswerCell(getActivity(), word.charAt(i), wordLength);
                 mAnswerContainer.addView(answerCell, mParams);
                 mAnswerCells.add(answerCell);
                 answerCell.setOnClickListener(view -> {
-                    if (useSecondHint){
-                        if (answerCell.isEmpty()){
+                    if (useSecondHint) {
+                        if (answerCell.isEmpty()) {
                             mSoundRep.playSound(mSoundRep.getButtonClickSound());
                             mPoints.useSecondHint();
                             mHintTitle.setText(getString(R.string.hints_title, mPoints.getCurrentPoints()));
@@ -313,7 +338,7 @@ public class QuestionFragment extends Fragment{
                         answerCell.clearAnswerCell();
                     }
                 });
-            }else{
+            } else {
                 TextView emptyTextView = new TextView(getActivity());
                 emptyTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 5);
                 emptyTextView.setMinEms(1);
@@ -323,46 +348,46 @@ public class QuestionFragment extends Fragment{
         }
     }
 
-    private void checkForWin(){
+    private void checkForWin() {
         boolean win = true;
         boolean answerComplete = true;
 
-        for(AnswerCell answerCell: mAnswerCells){
+        for (AnswerCell answerCell : mAnswerCells) {
             if (!answerCell.compareAnswerSymbols()) win = false;
             if (answerCell.isEmpty()) answerComplete = false;
         }
-        if (answerComplete){
-            if (win){
+        if (answerComplete) {
+            if (win) {
                 setPuzzleNextButton();
                 incrementId();
                 showInterstitialAd();
                 saveId();
                 animationShowNextButton();
                 mPoints.increasePoints();
-            }else{
-                for(AnswerCell answerCell: mAnswerCells){
+            } else {
+                for (AnswerCell answerCell : mAnswerCells) {
                     animationWrong(answerCell);
                 }
             }
         }
     }
 
-    private void loadBundle(){
+    private void loadBundle() {
         Bundle bundle = getArguments();
-        if (bundle != null){
+        if (bundle != null) {
             category = bundle.getString(CATEGORY_TAG);
         }
     }
 
-    private void parseDocument(){
+    private void parseDocument() {
         loadBundle();
         loadId();
         try {
             XmlPullParser parser = getResources().getXml(R.xml.text);
             while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
-                if(parser.getEventType() == XmlPullParser.START_TAG
+                if (parser.getEventType() == XmlPullParser.START_TAG
                         && parser.getName().equals("category")
-                        && parser.getAttributeValue(0).equals(category)){
+                        && parser.getAttributeValue(0).equals(category)) {
                     for (int i = 1; i <= 50; i++) {
                         while (!(parser.getEventType() == XmlPullParser.START_TAG
                                 && parser.getName().equals("question")
@@ -376,11 +401,11 @@ public class QuestionFragment extends Fragment{
                                 question.setQuestionText(parser.getText());
                             }
                         }
-                        while(!(parser.getEventType() == XmlPullParser.START_TAG
-                                && parser.getName().equals("answer"))){
+                        while (!(parser.getEventType() == XmlPullParser.START_TAG
+                                && parser.getName().equals("answer"))) {
                             parser.next();
                         }
-                        if(parser.next() == XmlPullParser.TEXT){
+                        if (parser.next() == XmlPullParser.TEXT) {
                             question.setAnswer(parser.getText());
                         }
                         mQuestions.add(question);
@@ -388,15 +413,15 @@ public class QuestionFragment extends Fragment{
                 }
                 parser.next();
             }
-        }catch (Throwable t){
+        } catch (Throwable t) {
             Toast.makeText(getActivity(), "Error loading XML document: " + t.toString(), Toast.LENGTH_LONG)
                     .show();
         }
     }
 
-    private void useHint1(){
+    private void useHint1() {
         if (useSecondHint) setDefaultImageSecondHint();
-        if (mPoints.checkFirstHint()){
+        if (mPoints.checkFirstHint()) {
             mSoundRep.playSound(mSoundRep.getHintSound());
             for (AnswerCell answerCell : mAnswerCells) {
                 answerCell.clearAnswerCell();
@@ -407,12 +432,12 @@ public class QuestionFragment extends Fragment{
             mPoints.useFirstHint();
             mHintTitle.setText(getString(R.string.hints_title, mPoints.getCurrentPoints()));
             blockHint1();
-        }else{
+        } else {
             animationWrong(mHintTitle);
         }
     }
 
-    private void useHint2(){
+    private void useHint2() {
         boolean z = false;
         if (mPoints.checkSecondHint()) {
             if (!useSecondHint) {
@@ -421,22 +446,22 @@ public class QuestionFragment extends Fragment{
             useSecondHint = z;
             if (useSecondHint) mButtonHint2.setBackgroundResource(R.drawable.hint_button_active);
             else mButtonHint2.setBackgroundResource(R.drawable.hint_button);
-        }else{
+        } else {
             animationWrong(mHintTitle);
         }
     }
 
-    private void useBonus(){
+    private void useBonus() {
         mSoundRep.playSound(mSoundRep.getPoints());
         mHintTitle.setText(getString(R.string.hints_title, mPoints.getCurrentPoints()));
         bonusUsed = false;
     }
 
-    private void blockHint1(){
+    private void blockHint1() {
         mButtonHint1.setVisibility(View.INVISIBLE);
     }
 
-    private void animationShowNextButton(){
+    private void animationShowNextButton() {
         mNextButton.setVisibility(View.VISIBLE);
         mSoundRep.playSound(mSoundRep.getSwishUp());
         float butStart = mNextButton.getTop() - mNextButton.getHeight();
@@ -448,7 +473,7 @@ public class QuestionFragment extends Fragment{
         mNextButton.setClickable(true);
     }
 
-    private void animationHideNextButton(){
+    private void animationHideNextButton() {
         updateContent();
         mSoundRep.playSound(mSoundRep.getSwishDown());
         mNextButton.setClickable(false);
@@ -460,7 +485,7 @@ public class QuestionFragment extends Fragment{
         buttonAnimator.start();
     }
 
-    private void animationWrong(TextView textView){
+    private void animationWrong(TextView textView) {
         mSoundRep.playSound(mSoundRep.getErrorSound());
         ObjectAnimator wrongAnimator = ObjectAnimator
                 .ofInt(textView, "textColor", textView.getCurrentTextColor(), ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.wrongAnswer))
@@ -481,19 +506,19 @@ public class QuestionFragment extends Fragment{
         animatorSet.start();
     }
 
-    private void hidePickCell(char correctSymbol){
+    private void hidePickCell(char correctSymbol) {
         boolean temp = true;
-        for(GameCell gameCell: mGameCells){
-            if (gameCell.getGameSymbol() == correctSymbol && !gameCell.isClicked() && gameCell.isRightSymbol()){
+        for (GameCell gameCell : mGameCells) {
+            if (gameCell.getGameSymbol() == correctSymbol && !gameCell.isClicked() && gameCell.isRightSymbol()) {
                 gameCell.hideCell();
                 gameCell.setClicked(true);
                 temp = false;
                 break;
             }
         }
-        if (temp){
-            for(AnswerCell answerCell: mAnswerCells){
-                if (answerCell.getGameCell() != null && answerCell.getAnswerSymbol() == correctSymbol && answerCell.getGameCell().isRightSymbol()){
+        if (temp) {
+            for (AnswerCell answerCell : mAnswerCells) {
+                if (answerCell.getGameCell() != null && answerCell.getAnswerSymbol() == correctSymbol && answerCell.getGameCell().isRightSymbol()) {
                     GameCell gameCell = answerCell.getGameCell();
                     answerCell.clearAnswerCell();
                     gameCell.hideCell();
@@ -504,18 +529,18 @@ public class QuestionFragment extends Fragment{
         }
     }
 
-    private void setDefaultImageSecondHint(){
+    private void setDefaultImageSecondHint() {
         useSecondHint = false;
         mButtonHint2.setBackgroundResource(R.drawable.hint_button);
     }
 
-    private void initNumb(){
+    private void initNumb() {
         for (int i = 0; i < MAX_CELLS_COUNT; i++) {
             NUMBERS.add(i);
         }
     }
 
-    private void setInterstitialAd(){
+    private void setInterstitialAd() {
         mAdCounter = mPref.getInt(AD_COUNTER_TAG, 0);
         mInterstitialAd = new InterstitialAd(Objects.requireNonNull(getActivity()));
         mInterstitialAd.setAdUnitId(getString(R.string.test_interstitial_id));
@@ -529,18 +554,18 @@ public class QuestionFragment extends Fragment{
         });
     }
 
-    private void showInterstitialAd(){
-        if(mAdCounter != 12){
+    private void showInterstitialAd() {
+        if (mAdCounter != 12) {
             mAdCounter++;
-        }else{
-            if(mInterstitialAd.isLoaded()) mInterstitialAd.show();
+        } else {
+            if (mInterstitialAd.isLoaded()) mInterstitialAd.show();
             mAdCounter = 0;
         }
         SharedPreferences.Editor editor = mPref.edit();
         editor.putInt(AD_COUNTER_TAG, mAdCounter).apply();
     }
 
-    private void setRewardedVideo(){
+    private void setRewardedVideo() {
         RewardedVideoAdListener rewardedVideoAdListener = new RewardedVideoAdListener() {
             @Override
             public void onRewardedVideoAdLoaded() {
@@ -563,7 +588,7 @@ public class QuestionFragment extends Fragment{
                 mButtonBonus.setEnabled(false);
                 mButtonBonus.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.disabled_bonus_button));
                 loadRewardVideo();
-                if(bonusUsed) useBonus();
+                if (bonusUsed) useBonus();
             }
 
             @Override
@@ -592,17 +617,17 @@ public class QuestionFragment extends Fragment{
         loadRewardVideo();
     }
 
-    private void loadRewardVideo(){
+    private void loadRewardVideo() {
         mRewardedVideoAd.loadAd(getString(R.string.test_rewarded_video_id), new AdRequest.Builder().build());
     }
 
-    private void showDialogForBonus(){
+    private void showDialogForBonus() {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
         alertDialog.setTitle(getString(R.string.dialog_title));
         alertDialog.setMessage(getString(R.string.dialog_bonus_message));
         alertDialog.setCancelable(true);
         alertDialog.setPositiveButton(getString(R.string.positive_button), (dialogInterface, i) -> {
-            if (mRewardedVideoAd.isLoaded()){
+            if (mRewardedVideoAd.isLoaded()) {
                 mRewardedVideoAd.show();
             }
         });
@@ -612,28 +637,10 @@ public class QuestionFragment extends Fragment{
         alertDialog.show();
     }
 
-    private void setBanner(){
-        final AdView mAdView = new AdView(Objects.requireNonNull(getActivity()));
-        mAdView.setAdSize(AdSize.BANNER);
-        mAdView.setAdUnitId(getString(R.string.test_banner_id));
-        mAdView.loadAd(new AdRequest.Builder().build());
-        mAdView.setAdListener(new AdListener(){
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-                if(QuestionFragment.this.getView() != null) {
-                    mAdContainer = QuestionFragment.this.getView().findViewById(R.id.container_for_Ad);
-                    mAdContainer.removeAllViews();
-                    mAdContainer.addView(mAdView);
-                }
-            }
-        });
-    }
-
-    private void incrementId(){
+    private void incrementId() {
         if (mQId != 49) {
             mQId++;
-        }else{
+        } else {
             mQId = 0;
             mNextButton.setText(getString(R.string.end_game_text, category));
             SharedPreferences.Editor editor = mPref.edit();

@@ -13,39 +13,39 @@ public class Points {
     private static final int POINTS_START_GAME = 13;
     private static final String KEY_POINTS = "points";
 
-    public Points(SharedPreferences sharedPreferences){
+    public Points(SharedPreferences sharedPreferences) {
         mPref = sharedPreferences;
     }
 
-    public boolean checkFirstHint(){
+    public boolean checkFirstHint() {
         return getCurrentPoints() >= PRICE_FIRST_HINT;
     }
 
-    public boolean checkSecondHint(){
+    public boolean checkSecondHint() {
         return getCurrentPoints() >= PRICE_SECOND_HINT;
     }
 
-    public void useFirstHint(){
+    public void useFirstHint() {
         SharedPreferences.Editor editor = mPref.edit();
         editor.putInt(KEY_POINTS, getCurrentPoints() - PRICE_FIRST_HINT).apply();
     }
 
-    public void useSecondHint(){
+    public void useSecondHint() {
         SharedPreferences.Editor editor = mPref.edit();
         editor.putInt(KEY_POINTS, getCurrentPoints() - PRICE_SECOND_HINT).apply();
     }
 
-    public void useBonusHint(){
+    public void useBonusHint() {
         SharedPreferences.Editor editor = mPref.edit();
         editor.putInt(KEY_POINTS, getCurrentPoints() + POINTS_FOR_BONUS).apply();
     }
 
-    public void increasePoints(){
+    public void increasePoints() {
         SharedPreferences.Editor editor = mPref.edit();
         editor.putInt(KEY_POINTS, getCurrentPoints() + POINTS_FOR_WIN).apply();
     }
 
-    public int getCurrentPoints(){
+    public int getCurrentPoints() {
         return mPref.getInt(KEY_POINTS, POINTS_START_GAME);
     }
 }
