@@ -1,14 +1,15 @@
 package com.bignerdranch.android.cinemaquiz.activities;
 
 import android.os.Bundle;
+
+import com.bignerdranch.android.cinemaquiz.R;
+import com.bignerdranch.android.cinemaquiz.fragments.MainFragment;
+import com.google.android.gms.ads.MobileAds;
+
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.bignerdranch.android.cinemaquiz.fragments.MainFragment;
-import com.bignerdranch.android.cinemaquiz.R;
-import com.google.android.gms.ads.MobileAds;
 
 public class MainActivity extends AppCompatActivity{
 

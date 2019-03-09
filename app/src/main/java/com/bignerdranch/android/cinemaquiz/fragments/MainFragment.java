@@ -2,15 +2,10 @@ package com.bignerdranch.android.cinemaquiz.fragments;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +15,14 @@ import android.widget.Toast;
 
 import com.bignerdranch.android.cinemaquiz.R;
 import com.bignerdranch.android.cinemaquiz.utils.SingletonFonts;
+
+import java.util.Objects;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 public class MainFragment extends Fragment{
 
@@ -42,63 +45,46 @@ public class MainFragment extends Fragment{
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_cinema_quiz, container, false);
 
-        mPref = getActivity().getSharedPreferences(QuestionFragment.APP_TAG, Context.MODE_PRIVATE);
+        mPref = Objects.requireNonNull(getActivity()).getSharedPreferences(QuestionFragment.APP_TAG, Context.MODE_PRIVATE);
         isSound = mPref.getBoolean(KEY_SOUND, true);
 
         mStartButton = view.findViewById(R.id.start_button);
         mStartButton.setTypeface(SingletonFonts.getInstance(getActivity()).getFont1());
-        mStartButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                FragmentTransaction trans = getFragmentManager().beginTransaction();
-                trans.replace(R.id.fragmentContainer, CategoriesFragment.newInstance())
-                        .addToBackStack(null).commit();
-            }
+        mStartButton.setOnClickListener(view1 -> {
+            FragmentTransaction trans = Objects.requireNonNull(getFragmentManager()).beginTransaction();
+            trans.replace(R.id.fragmentContainer, CategoriesFragment.newInstance())
+                    .addToBackStack(null).commit();
         });
 
         mRulesButton = view.findViewById(R.id.rules_button);
         mRulesButton.setTypeface(SingletonFonts.getInstance(getActivity()).getFont1());
-        mRulesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentTransaction trans = getFragmentManager().beginTransaction();
-                trans.replace(R.id.fragmentContainer, RulesFragment.newInstance())
-                        .addToBackStack(null).commit();
-            }
+        mRulesButton.setOnClickListener(view12 -> {
+            FragmentTransaction trans = Objects.requireNonNull(getFragmentManager()).beginTransaction();
+            trans.replace(R.id.fragmentContainer, RulesFragment.newInstance())
+                    .addToBackStack(null).commit();
         });
 
         mFaqButton = view.findViewById(R.id.faq_button);
         mFaqButton.setTypeface(SingletonFonts.getInstance(getActivity()).getFont1());
-        mFaqButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentTransaction trans = getFragmentManager().beginTransaction();
-                trans.replace(R.id.fragmentContainer, FaqFragment.newInstance())
-                        .addToBackStack(null).commit();
-            }
+        mFaqButton.setOnClickListener(view13 -> {
+            FragmentTransaction trans = Objects.requireNonNull(getFragmentManager()).beginTransaction();
+            trans.replace(R.id.fragmentContainer, FaqFragment.newInstance())
+                    .addToBackStack(null).commit();
         });
 
         mRateButton = view.findViewById(R.id.rate_button);
-        mRateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialogForRate();
-            }
-        });
+        mRateButton.setOnClickListener(view14 -> showDialogForRate());
 
         mSoundButton = view.findViewById(R.id.sound_button);
         setSoundImage();
-        mSoundButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isSound = !isSound;
-                setSoundImage();
-                SharedPreferences.Editor editor = mPref.edit();
-                editor.putBoolean(KEY_SOUND, isSound).apply();
-            }
+        mSoundButton.setOnClickListener(view15 -> {
+            isSound = !isSound;
+            setSoundImage();
+            SharedPreferences.Editor editor = mPref.edit();
+            editor.putBoolean(KEY_SOUND, isSound).apply();
         });
 
         mTitleButton = view.findViewById(R.id.main_title);
@@ -122,22 +108,12 @@ public class MainFragment extends Fragment{
     }
 
     private void showDialogForRate(){
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
         alertDialog.setTitle(getString(R.string.dialog_title));
         alertDialog.setMessage(getString(R.string.dialog_rate_message));
         alertDialog.setCancelable(true);
-        alertDialog.setPositiveButton(getString(R.string.positive_button), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                rateThisApp();
-            }
-        });
-        alertDialog.setNegativeButton(getString(R.string.negative_button), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
+        alertDialog.setPositiveButton(getString(R.string.positive_button), (dialogInterface, i) -> rateThisApp());
+        alertDialog.setNegativeButton(getString(R.string.negative_button), (dialogInterface, i) -> {});
         alertDialog.show();
     }
 

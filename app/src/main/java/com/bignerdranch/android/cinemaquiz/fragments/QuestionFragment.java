@@ -4,14 +4,8 @@ import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,12 +16,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bignerdranch.android.cinemaquiz.R;
+import com.bignerdranch.android.cinemaquiz.common.SoundRep;
 import com.bignerdranch.android.cinemaquiz.model.AnswerCell;
 import com.bignerdranch.android.cinemaquiz.model.GameCell;
 import com.bignerdranch.android.cinemaquiz.model.Points;
 import com.bignerdranch.android.cinemaquiz.model.Question;
-import com.bignerdranch.android.cinemaquiz.R;
-import com.bignerdranch.android.cinemaquiz.common.SoundRep;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -43,7 +37,14 @@ import org.xmlpull.v1.XmlPullParser;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 public class QuestionFragment extends Fragment{
 
@@ -104,7 +105,7 @@ public class QuestionFragment extends Fragment{
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.question_fragment, container, false);
         initViewComponents(view);
         parseDocument();
@@ -142,35 +143,17 @@ public class QuestionFragment extends Fragment{
         mHintTitle = view.findViewById(R.id.hint_count);
         mButtonBonus = view.findViewById(R.id.hint_bonus);
         mButtonBonus.setEnabled(false);
-        mButtonBonus.setTextColor(ContextCompat.getColor(getContext(), R.color.disabled_bonus_button));
-        mButtonBonus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (useSecondHint) setDefaultImageSecondHint();
-                showDialogForBonus();
-            }
+        mButtonBonus.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.disabled_bonus_button));
+        mButtonBonus.setOnClickListener(view1 -> {
+            if (useSecondHint) setDefaultImageSecondHint();
+            showDialogForBonus();
         });
         mButtonHint1 = view.findViewById(R.id.hint_1);
-        mButtonHint1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                useHint1();
-            }
-        });
+        mButtonHint1.setOnClickListener(view12 -> useHint1());
         mButtonHint2 = view.findViewById(R.id.hint_2);
-        mButtonHint2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                useHint2();
-            }
-        });
-        mNextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                animationHideNextButton();
-            }
-        });
-        mPref = getActivity().getSharedPreferences(APP_TAG, Context.MODE_PRIVATE);
+        mButtonHint2.setOnClickListener(view13 -> useHint2());
+        mNextButton.setOnClickListener(view14 -> animationHideNextButton());
+        mPref = Objects.requireNonNull(getActivity()).getSharedPreferences(APP_TAG, Context.MODE_PRIVATE);
         mParams = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         mSoundRep = new SoundRep(getContext());
         mPoints = new Points(mPref);
@@ -263,21 +246,18 @@ public class QuestionFragment extends Fragment{
             gameCell.setLayoutParams(mGameParams);
             linearLayout.addView(gameCell);
             mGameCells.add(gameCell);
-            gameCell.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                mSoundRep.playSound(mSoundRep.getButtonClickSound());
-                if (useSecondHint) setDefaultImageSecondHint();
-                for(AnswerCell answerCell: mAnswerCells){
-                    if (answerCell.isEmpty() && !gameCell.isClicked()){
-                        answerCell.setAnswerSymbol(gameCell);
-                        gameCell.hideCell();
-                        gameCell.setClicked(true);
-                        checkForWin();
-                        return;
-                    }
+            gameCell.setOnClickListener(view -> {
+            mSoundRep.playSound(mSoundRep.getButtonClickSound());
+            if (useSecondHint) setDefaultImageSecondHint();
+            for(AnswerCell answerCell: mAnswerCells){
+                if (answerCell.isEmpty() && !gameCell.isClicked()){
+                    answerCell.setAnswerSymbol(gameCell);
+                    gameCell.hideCell();
+                    gameCell.setClicked(true);
+                    checkForWin();
+                    return;
                 }
-                }
+            }
             });
         }
     }
@@ -316,24 +296,21 @@ public class QuestionFragment extends Fragment{
                 final AnswerCell answerCell = new AnswerCell(getActivity(), word.charAt(i), wordLength);
                 mAnswerContainer.addView(answerCell, mParams);
                 mAnswerCells.add(answerCell);
-                answerCell.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (useSecondHint){
-                            if (answerCell.isEmpty()){
-                                mSoundRep.playSound(mSoundRep.getButtonClickSound());
-                                mPoints.useSecondHint();
-                                mHintTitle.setText(getString(R.string.hints_title, mPoints.getCurrentPoints()));
-                                hidePickCell(answerCell.getCorrectSymbol());
-                                answerCell.showCorrectSymbol();
-                                checkForWin();
-                            }
-                            setDefaultImageSecondHint();
-                        }
-                        if (!answerCell.isEmpty() && (answerCell.getGameCell() != null)) {
+                answerCell.setOnClickListener(view -> {
+                    if (useSecondHint){
+                        if (answerCell.isEmpty()){
                             mSoundRep.playSound(mSoundRep.getButtonClickSound());
-                            answerCell.clearAnswerCell();
+                            mPoints.useSecondHint();
+                            mHintTitle.setText(getString(R.string.hints_title, mPoints.getCurrentPoints()));
+                            hidePickCell(answerCell.getCorrectSymbol());
+                            answerCell.showCorrectSymbol();
+                            checkForWin();
                         }
+                        setDefaultImageSecondHint();
+                    }
+                    if (!answerCell.isEmpty() && (answerCell.getGameCell() != null)) {
+                        mSoundRep.playSound(mSoundRep.getButtonClickSound());
+                        answerCell.clearAnswerCell();
                     }
                 });
             }else{
@@ -486,7 +463,7 @@ public class QuestionFragment extends Fragment{
     private void animationWrong(TextView textView){
         mSoundRep.playSound(mSoundRep.getErrorSound());
         ObjectAnimator wrongAnimator = ObjectAnimator
-                .ofInt(textView, "textColor", textView.getCurrentTextColor(), ContextCompat.getColor(getContext(), R.color.wrongAnswer))
+                .ofInt(textView, "textColor", textView.getCurrentTextColor(), ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.wrongAnswer))
                 .setDuration(200);
         wrongAnimator.setRepeatCount(1);
         wrongAnimator.setEvaluator(new ArgbEvaluator());
@@ -540,7 +517,7 @@ public class QuestionFragment extends Fragment{
 
     private void setInterstitialAd(){
         mAdCounter = mPref.getInt(AD_COUNTER_TAG, 0);
-        mInterstitialAd = new InterstitialAd(getActivity());
+        mInterstitialAd = new InterstitialAd(Objects.requireNonNull(getActivity()));
         mInterstitialAd.setAdUnitId(getString(R.string.test_interstitial_id));
         AdRequest adRequest = new AdRequest.Builder().build();
         mInterstitialAd.loadAd(adRequest);
@@ -568,7 +545,7 @@ public class QuestionFragment extends Fragment{
             @Override
             public void onRewardedVideoAdLoaded() {
                 mButtonBonus.setEnabled(true);
-                mButtonBonus.setTextColor(ContextCompat.getColor(getContext(), R.color.enable_bonus_button));
+                mButtonBonus.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.enable_bonus_button));
             }
 
             @Override
@@ -584,7 +561,7 @@ public class QuestionFragment extends Fragment{
             @Override
             public void onRewardedVideoAdClosed() {
                 mButtonBonus.setEnabled(false);
-                mButtonBonus.setTextColor(ContextCompat.getColor(getContext(), R.color.disabled_bonus_button));
+                mButtonBonus.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.disabled_bonus_button));
                 loadRewardVideo();
                 if(bonusUsed) useBonus();
             }
@@ -620,29 +597,23 @@ public class QuestionFragment extends Fragment{
     }
 
     private void showDialogForBonus(){
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
         alertDialog.setTitle(getString(R.string.dialog_title));
         alertDialog.setMessage(getString(R.string.dialog_bonus_message));
         alertDialog.setCancelable(true);
-        alertDialog.setPositiveButton(getString(R.string.positive_button), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (mRewardedVideoAd.isLoaded()){
-                    mRewardedVideoAd.show();
-                }
+        alertDialog.setPositiveButton(getString(R.string.positive_button), (dialogInterface, i) -> {
+            if (mRewardedVideoAd.isLoaded()){
+                mRewardedVideoAd.show();
             }
         });
-        alertDialog.setNegativeButton(getString(R.string.negative_button), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        alertDialog.setNegativeButton(getString(R.string.negative_button), (dialogInterface, i) -> {
 
-            }
         });
         alertDialog.show();
     }
 
     private void setBanner(){
-        final AdView mAdView = new AdView(getActivity());
+        final AdView mAdView = new AdView(Objects.requireNonNull(getActivity()));
         mAdView.setAdSize(AdSize.BANNER);
         mAdView.setAdUnitId(getString(R.string.test_banner_id));
         mAdView.loadAd(new AdRequest.Builder().build());

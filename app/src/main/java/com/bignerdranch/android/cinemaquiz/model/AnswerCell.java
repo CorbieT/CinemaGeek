@@ -1,12 +1,13 @@
 package com.bignerdranch.android.cinemaquiz.model;
 
 import android.content.Context;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.AppCompatTextView;
 import android.util.TypedValue;
 import android.view.Gravity;
 
 import com.bignerdranch.android.cinemaquiz.R;
+
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
 
 public class AnswerCell extends AppCompatTextView{
 

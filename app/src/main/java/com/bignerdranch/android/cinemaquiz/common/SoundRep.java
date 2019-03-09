@@ -23,21 +23,25 @@ public class SoundRep {
     private AssetManager mAssetManager;
     private SoundPool mSoundPool;
 
-    private int mStreamID;
-    private int mHintSound, mButtonClickSound, mErrorSound, mPoints, mSwishUp, mSwishDown;
+    private int mHintSound;
+    private int mButtonClickSound;
+    private int mErrorSound;
+    private int mPoints;
+    private int mSwishUp;
+    private int mSwishDown;
 
     private boolean isSound;
 
     private Context mContext;
 
-    public SoundRep(Context context){
+    public SoundRep(Context context) {
         mContext = context;
         SharedPreferences mPref = context.getSharedPreferences(QuestionFragment.APP_TAG, Context.MODE_PRIVATE);
         isSound = mPref.getBoolean(MainFragment.KEY_SOUND, true);
         loadSoundPool();
     }
 
-    private void loadSoundPool(){
+    private void loadSoundPool() {
         createSoundPool();
         mAssetManager = mContext.getAssets();
 
@@ -49,16 +53,16 @@ public class SoundRep {
         mSwishDown = loadSound("swishdown.mp3");
     }
 
-    private void createSoundPool(){
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+    private void createSoundPool() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             createOldSoundPool();
-        }else{
+        } else {
             createNewSoundPool();
         }
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void createNewSoundPool(){
+    private void createNewSoundPool() {
         AudioAttributes attributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build();
@@ -68,15 +72,15 @@ public class SoundRep {
     }
 
     @SuppressWarnings("deprecation")
-    private void createOldSoundPool(){
+    private void createOldSoundPool() {
         mSoundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
     }
 
-    private int loadSound(String fileName){
+    private int loadSound(String fileName) {
         AssetFileDescriptor afd;
-        try{
+        try {
             afd = mAssetManager.openFd(fileName);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(mContext.getApplicationContext(), "Error loading sound file " + fileName, Toast.LENGTH_SHORT).show();
             return -1;
@@ -84,19 +88,14 @@ public class SoundRep {
         return mSoundPool.load(afd, 1);
     }
 
-    public int playSound(int sound){
-        if (isSound) {
-            if (sound > 0) {
-                mStreamID = mSoundPool.play(sound, 1, 1, 1, 0, 1);
-            }
-            return mStreamID;
-        }else{
-            return 0;
+    public void playSound(int sound) {
+        if (isSound && sound > 0) {
+            mSoundPool.play(sound, 1, 1, 1, 0, 1);
         }
     }
 
     //Crash with call
-    public void releaseSoundPool(){
+    public void releaseSoundPool() {
         mSoundPool.release();
         mSoundPool = null;
     }

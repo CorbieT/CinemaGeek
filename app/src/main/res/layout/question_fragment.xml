@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:ads="http://schemas.android.com/apk/res-auto"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/question_fragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/question_fragment_bg">
+    android:id="@+id/question_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/question_fragment_bg">
 
     <LinearLayout
         android:id="@+id/title_container"
