@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
 import com.bignerdranch.android.cinemaquiz.R;
@@ -43,6 +45,7 @@ public class CategoriesFragment extends Fragment {
         View view = inflater.inflate(R.layout.categories_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
         categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        categoriesRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(categoriesRecyclerView.getContext(), R.anim.layout_animation_waterfall));
         categoriesRecyclerView.setAdapter(new CategoryAdapter(getActivity(), getCategoriesFromXml(), s -> {
             QuestionFragment fragment = QuestionFragment.newInstance(s);
             FragmentTransaction trans = Objects.requireNonNull(Objects.requireNonNull(getActivity()).getSupportFragmentManager()).beginTransaction();
