@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@drawable/top_bottom_stroke"
-        android:fontFamily="serif"
+        android:fontFamily="@font/trixie"
         android:text="@string/main_title"
         android:textAlignment="center"
         android:textAllCaps="false"
@@ -30,10 +30,11 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="155dp"
         android:clickable="true"
-        android:fontFamily="serif"
+        android:focusable="true"
+        android:fontFamily="@font/trixie"
         android:text="@string/start_btn_text"
         android:textColor="#ffffff"
-        android:textSize="42sp"/>
+        android:textSize="42sp" />
 
     <TextView
         android:id="@+id/rules_button"
@@ -43,7 +44,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:clickable="true"
-        android:fontFamily="serif"
+        android:focusable="true"
+        android:fontFamily="@font/trixie"
         android:text="@string/rules_btn_text"
         android:textColor="#ffffff"
         android:textSize="42sp"/>
@@ -56,7 +58,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:clickable="true"
-        android:fontFamily="serif"
+        android:focusable="true"
+        android:fontFamily="@font/trixie"
         android:text="@string/faq_btn_text"
         android:textColor="#ffffff"
         android:textSize="42sp"/>

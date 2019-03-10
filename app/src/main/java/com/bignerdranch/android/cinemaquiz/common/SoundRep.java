@@ -36,8 +36,7 @@ public class SoundRep {
 
     public SoundRep(Context context) {
         mContext = context;
-        SharedPreferences mPref = context.getSharedPreferences(QuestionFragment.APP_TAG, Context.MODE_PRIVATE);
-        isSound = mPref.getBoolean(MainFragment.KEY_SOUND, true);
+        isSound = HawkManager.getInstance().isKeySound();
         loadSoundPool();
     }
 

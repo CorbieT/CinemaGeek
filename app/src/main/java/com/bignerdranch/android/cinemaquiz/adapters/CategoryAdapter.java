@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.bignerdranch.android.cinemaquiz.R;
 import com.bignerdranch.android.cinemaquiz.fragments.QuestionFragment;
 import com.bignerdranch.android.cinemaquiz.model.Category;
-import com.bignerdranch.android.cinemaquiz.utils.SingletonFonts;
 
 import java.util.List;
 import java.util.Objects;
@@ -44,7 +43,6 @@ public class CategoryAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Category category = items.get(position);
         ((CategoryHolder) holder).mTitleTextView.setText(category.getTitle());
-        ((CategoryHolder) holder).mTitleTextView.setTypeface(SingletonFonts.getInstance(context).getFont1());
 
         SharedPreferences mPref = Objects.requireNonNull(context).getSharedPreferences(QuestionFragment.APP_TAG, Context.MODE_PRIVATE);
         if (mPref.getBoolean(category.getTitle() + "_complete", false))
