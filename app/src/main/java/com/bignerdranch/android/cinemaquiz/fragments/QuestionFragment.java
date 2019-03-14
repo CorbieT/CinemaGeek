@@ -131,7 +131,7 @@ public class QuestionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.question_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
-        initViewComponents(view);
+        initViewComponents();
         parseDocument();
         updateContent();
         setNextButtonBackground();
@@ -162,7 +162,7 @@ public class QuestionFragment extends Fragment {
         super.onDestroy();
     }
 
-    private void initViewComponents(View view) {
+    private void initViewComponents() {
         setRewardedVideo();
         mGameCells = new ArrayList<>(MAX_CELLS_COUNT);
         mButtonBonus.setEnabled(false);
