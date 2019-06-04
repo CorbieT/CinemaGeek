@@ -1,21 +1,15 @@
 package com.bignerdranch.android.cinemaquiz.model;
 
-import android.content.SharedPreferences;
+import com.bignerdranch.android.cinemaquiz.common.HawkManager;
 
 public class Points {
-
-    private SharedPreferences mPref;
 
     private static final int POINTS_FOR_WIN = 2;
     private static final int PRICE_FIRST_HINT = 10;
     private static final int POINTS_FOR_BONUS = 10;
     private static final int PRICE_SECOND_HINT = 1;
     private static final int POINTS_START_GAME = 13;
-    private static final String KEY_POINTS = "points";
-
-    public Points(SharedPreferences sharedPreferences) {
-        mPref = sharedPreferences;
-    }
+    private final HawkManager hawkManager = HawkManager.getInstance();
 
     public boolean checkFirstHint() {
         return getCurrentPoints() >= PRICE_FIRST_HINT;
@@ -26,26 +20,22 @@ public class Points {
     }
 
     public void useFirstHint() {
-        SharedPreferences.Editor editor = mPref.edit();
-        editor.putInt(KEY_POINTS, getCurrentPoints() - PRICE_FIRST_HINT).apply();
+        hawkManager.setPoints(getCurrentPoints() - PRICE_FIRST_HINT);
     }
 
     public void useSecondHint() {
-        SharedPreferences.Editor editor = mPref.edit();
-        editor.putInt(KEY_POINTS, getCurrentPoints() - PRICE_SECOND_HINT).apply();
+        hawkManager.setPoints(getCurrentPoints() - PRICE_SECOND_HINT);
     }
 
     public void useBonusHint() {
-        SharedPreferences.Editor editor = mPref.edit();
-        editor.putInt(KEY_POINTS, getCurrentPoints() + POINTS_FOR_BONUS).apply();
+        hawkManager.setPoints(getCurrentPoints() + POINTS_FOR_BONUS);
     }
 
     public void increasePoints() {
-        SharedPreferences.Editor editor = mPref.edit();
-        editor.putInt(KEY_POINTS, getCurrentPoints() + POINTS_FOR_WIN).apply();
+        hawkManager.setPoints(getCurrentPoints() + POINTS_FOR_WIN);
     }
 
     public int getCurrentPoints() {
-        return mPref.getInt(KEY_POINTS, POINTS_START_GAME);
+        return hawkManager.getPoints(POINTS_START_GAME);
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/question_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,8 +23,9 @@
             android:layout_gravity="start"
             android:layout_weight="1"
             android:textAlignment="textStart"
+            tools:text="Вопрос 14"
             android:textColor="#FFD4D4D4"
-            android:textSize="24sp"/>
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/hint_count"
@@ -32,8 +34,9 @@
             android:layout_gravity="end"
             android:layout_weight="1"
             android:textAlignment="textEnd"
+            tools:text="Подсказок 26"
             android:textColor="#FFD4D4D4"
-            android:textSize="24sp"/>
+            android:textSize="18sp"/>
 
     </LinearLayout>
 
@@ -47,7 +50,6 @@
         android:layout_marginLeft="13dp"
         android:layout_marginRight="13dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/rectangle_rounded"
         android:orientation="vertical"
         android:paddingBottom="5dp">
 
@@ -56,6 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:background="@drawable/rectangle_rounded"
             android:scrollbars="none">
 
             <LinearLayout
@@ -73,19 +76,11 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
                     android:textAlignment="viewStart"
+                    tools:text="@android:string/autofill"
                     android:textColor="#FFD4D4D4"
-                    android:textSize="22sp"/>
+                    android:textSize="19sp"/>
             </LinearLayout>
         </ScrollView>
-
-        <LinearLayout
-            android:id="@+id/container_for_Ad"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-        </LinearLayout>
 
     </LinearLayout>
 
@@ -107,7 +102,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/game_cell_container"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="13dp"
@@ -120,7 +114,6 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:background="@drawable/hint_button"
             android:text="@string/first_hint"
@@ -133,9 +126,10 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:background="@drawable/bonus_button"
+            android:enabled="false"
+            android:textColor="@color/disabled_bonus_button"
             android:text="@string/bonus_hint"/>
 
         <Button
@@ -144,7 +138,6 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp"
             android:layout_weight="1"
             android:background="@drawable/hint_button"
             android:text="@string/second_hint"
@@ -190,7 +183,6 @@
         style="@style/next_button"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:text="@string/next_text"

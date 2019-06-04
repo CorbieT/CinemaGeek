@@ -5,20 +5,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bignerdranch.android.cinemaquiz.R;
-
-import org.xmlpull.v1.XmlPullParser;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.bignerdranch.android.cinemaquiz.R;
+import com.bignerdranch.android.cinemaquiz.common.XmlPullParserHelper;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class RulesFragment extends Fragment {
+public class RulesFragment extends BaseFragment {
 
     @BindView(R.id.rules_text_view)
     TextView mRulesTextView;
@@ -34,7 +33,7 @@ public class RulesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.rules_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
-        parseRules();
+        mRulesTextView.setText(XmlPullParserHelper.getRulesFromXml(getActivity()));
         return view;
     }
 
@@ -44,21 +43,4 @@ public class RulesFragment extends Fragment {
         unbinder.unbind();
     }
 
-    private void parseRules() {
-        try {
-            XmlPullParser parser = getResources().getXml(R.xml.rules);
-            while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
-                if (parser.getEventType() == XmlPullParser.START_TAG
-                        && parser.getName().equals("rules")) {
-                    if (parser.next() == XmlPullParser.TEXT) {
-                        mRulesTextView.setText(parser.getText());
-                    }
-                }
-                parser.next();
-            }
-        } catch (Throwable t) {
-            Toast.makeText(getActivity(), "Error loading XML document: " + t.toString(), Toast.LENGTH_LONG)
-                    .show();
-        }
-    }
 }

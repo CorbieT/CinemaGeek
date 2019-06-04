@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_weight="1"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +19,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="1"
+            tools:text="1"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -31,7 +32,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="2"
+            tools:text="2"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -44,7 +45,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="3"
+            tools:text="3"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -57,7 +58,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="4"
+            tools:text="4"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -70,7 +71,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="5"
+            tools:text="5"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -83,7 +84,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="6"
+            tools:text="6"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -103,7 +104,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="7"
+            tools:text="7"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -116,7 +117,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="8"
+            tools:text="8"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -129,7 +130,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="9"
+            tools:text="9"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -142,7 +143,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="10"
+            tools:text="10"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -155,7 +156,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="11"
+            tools:text="11"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -168,7 +169,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="12"
+            tools:text="12"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -187,7 +188,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="13"
+            tools:text="13"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -200,7 +201,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="14"
+            tools:text="14"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -213,7 +214,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="15"
+            tools:text="15"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -226,7 +227,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="16"
+            tools:text="16"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -239,7 +240,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="17"
+            tools:text="17"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>
@@ -252,7 +253,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_rounded"
             android:minEms="1"
-            android:text="18"
+            tools:text="18"
             android:textAlignment="center"
             android:textColor="#FFD4D4D4"
             android:textSize="28sp"/>

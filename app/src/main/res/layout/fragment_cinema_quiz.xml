@@ -70,16 +70,13 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/start_button"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/start_button"
         android:background="@android:color/transparent"
-        android:contentDescription="@string/description_sound"
         app:srcCompat="@drawable/volume_on"/>
 
     <ImageButton
         android:id="@+id/rate_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/start_button"
         android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/start_button"
         android:background="@android:color/transparent"

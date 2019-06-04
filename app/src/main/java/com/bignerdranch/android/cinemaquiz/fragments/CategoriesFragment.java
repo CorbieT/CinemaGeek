@@ -5,29 +5,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
-
-import com.bignerdranch.android.cinemaquiz.R;
-import com.bignerdranch.android.cinemaquiz.adapters.CategoryAdapter;
-import com.bignerdranch.android.cinemaquiz.model.Category;
-
-import org.xmlpull.v1.XmlPullParser;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bignerdranch.android.cinemaquiz.R;
+import com.bignerdranch.android.cinemaquiz.adapters.CategoryAdapter;
+import com.bignerdranch.android.cinemaquiz.common.XmlPullParserHelper;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class CategoriesFragment extends Fragment {
+public class CategoriesFragment extends BaseFragment {
 
     @BindView(R.id.fragment_categories_recycler_view)
     RecyclerView categoriesRecyclerView;
@@ -45,11 +37,9 @@ public class CategoriesFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         categoriesRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(categoriesRecyclerView.getContext(), R.anim.layout_animation));
-        categoriesRecyclerView.setAdapter(new CategoryAdapter(getActivity(), getCategoriesFromXml(), s -> {
-            QuestionFragment fragment = QuestionFragment.newInstance(s);
-            FragmentTransaction trans = Objects.requireNonNull(Objects.requireNonNull(getActivity()).getSupportFragmentManager()).beginTransaction();
-            trans.replace(R.id.fragmentContainer, fragment).addToBackStack(null).commit();
-        }));
+        categoriesRecyclerView.setAdapter(new CategoryAdapter(getActivity(),
+                XmlPullParserHelper.getCategoriesFromXml(getActivity()),
+                s -> createFragmentWithBackStack(QuestionFragment.newInstance(s), null)));
         return view;
     }
 
@@ -59,23 +49,5 @@ public class CategoriesFragment extends Fragment {
         unbinder.unbind();
     }
 
-    private List<Category> getCategoriesFromXml() {
-        List<Category> categories = new ArrayList<>();
-        try {
-            XmlPullParser parser = getResources().getXml(R.xml.text);
-            while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
-                if (parser.getEventType() == XmlPullParser.START_TAG
-                        && parser.getName().equals("category")) {
-                    Category category = new Category();
-                    category.setTitle(parser.getAttributeValue(0));
-                    categories.add(category);
-                }
-                parser.next();
-            }
-        } catch (Throwable t) {
-            Toast.makeText(getActivity(), "Error loading XML document: " + t.toString(), Toast.LENGTH_LONG)
-                    .show();
-        }
-        return categories;
-    }
+
 }

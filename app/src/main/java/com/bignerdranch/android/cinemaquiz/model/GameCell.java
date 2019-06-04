@@ -4,16 +4,29 @@ import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
 
-import com.bignerdranch.android.cinemaquiz.R;
-
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
+
+import com.bignerdranch.android.cinemaquiz.R;
 
 public class GameCell extends AppCompatTextView {
 
     private char mGameSymbol;
     private boolean isClicked = false;
     private boolean isRightSymbol = false;
+
+    public GameCell(Context context, char mGameSymbol, boolean isClicked, boolean isRightSymbol) {
+        super(context);
+        this.mGameSymbol = mGameSymbol;
+        this.isClicked = isClicked;
+        this.isRightSymbol = isRightSymbol;
+
+        setGravity(Gravity.CENTER_HORIZONTAL);
+        setMinEms(1);
+        setTextSize(28);
+        setTextColor(ContextCompat.getColor(getContext(), R.color.textColor));
+        this.setBackgroundResource(R.drawable.rectangle_rounded);
+    }
 
     public GameCell(Context context) {
         super(context);

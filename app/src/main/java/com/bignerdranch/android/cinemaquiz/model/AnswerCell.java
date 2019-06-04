@@ -4,10 +4,10 @@ import android.content.Context;
 import android.util.TypedValue;
 import android.view.Gravity;
 
-import com.bignerdranch.android.cinemaquiz.R;
-
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
+
+import com.bignerdranch.android.cinemaquiz.R;
 
 public class AnswerCell extends AppCompatTextView {
 

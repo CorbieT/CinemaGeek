@@ -1,23 +1,22 @@
 package com.bignerdranch.android.cinemaquiz.adapters;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.bignerdranch.android.cinemaquiz.R;
-import com.bignerdranch.android.cinemaquiz.fragments.QuestionFragment;
-import com.bignerdranch.android.cinemaquiz.model.Category;
-
-import java.util.List;
-import java.util.Objects;
-
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bignerdranch.android.cinemaquiz.R;
+import com.bignerdranch.android.cinemaquiz.common.HawkManager;
+import com.bignerdranch.android.cinemaquiz.model.Category;
+
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -44,9 +43,7 @@ public class CategoryAdapter extends RecyclerView.Adapter {
         Category category = items.get(position);
         ((CategoryHolder) holder).mTitleTextView.setText(category.getTitle());
 
-        SharedPreferences mPref = Objects.requireNonNull(context).getSharedPreferences(QuestionFragment.APP_TAG, Context.MODE_PRIVATE);
-        if (mPref.getBoolean(category.getTitle() + "_complete", false))
-            ((CategoryHolder) holder).mFrameLayout.setBackgroundResource(R.drawable.category_list_complete);
+        if (HawkManager.getInstance().isCategoryComplete(category.getTitle())) ((CategoryHolder) holder).mFrameLayout.setBackgroundResource(R.drawable.category_list_complete);
         else ((CategoryHolder) holder).mFrameLayout.setBackgroundResource(R.drawable.category_list);
     }
 

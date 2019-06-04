@@ -2,10 +2,10 @@ package com.bignerdranch.android.cinemaquiz.fragments;
 
 import android.content.Context;
 
-import com.bignerdranch.android.cinemaquiz.interfaces.FragmentHandler;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import com.bignerdranch.android.cinemaquiz.interfaces.FragmentHandler;
 
 public abstract class BaseFragment extends Fragment {
 

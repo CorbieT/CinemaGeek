@@ -2,22 +2,25 @@ package com.bignerdranch.android.cinemaquiz.activities;
 
 import android.os.Bundle;
 
-import com.bignerdranch.android.cinemaquiz.R;
-import com.bignerdranch.android.cinemaquiz.fragments.MainFragment;
-import com.bignerdranch.android.cinemaquiz.interfaces.FragmentHandler;
-import com.google.android.gms.ads.MobileAds;
-import com.orhanobut.hawk.Hawk;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+
+import com.bignerdranch.android.cinemaquiz.R;
+import com.bignerdranch.android.cinemaquiz.fragments.MainFragment;
+import com.bignerdranch.android.cinemaquiz.interfaces.FragmentHandler;
+import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.ads.MobileAds;
+import com.orhanobut.hawk.Hawk;
+
+import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity implements FragmentHandler {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_fragment);
 
         Hawk.init(this).build();
@@ -40,6 +43,5 @@ public class MainActivity extends AppCompatActivity implements FragmentHandler {
                 .addToBackStack(null)
                 .commit();
     }
-
 
 }

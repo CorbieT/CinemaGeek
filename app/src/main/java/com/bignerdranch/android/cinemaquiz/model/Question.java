@@ -1,22 +1,18 @@
 package com.bignerdranch.android.cinemaquiz.model;
 
-import java.util.UUID;
-
 public class Question {
 
-    private UUID mId;
+    private int mId;
     private String mQuestionText;
     private String mAnswer;
 
-    public Question() {
-        this(UUID.randomUUID());
+    public Question(int mId, String mQuestionText, String mAnswer) {
+        this.mId = mId;
+        this.mQuestionText = mQuestionText;
+        this.mAnswer = mAnswer;
     }
 
-    public Question(UUID id) {
-        mId = id;
-    }
-
-    public UUID getId() {
+    public int getId() {
         return mId;
     }
 

@@ -11,14 +11,15 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+
 import com.bignerdranch.android.cinemaquiz.R;
 import com.bignerdranch.android.cinemaquiz.common.HawkManager;
 
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -46,7 +47,6 @@ public class MainFragment extends BaseFragment {
 
     private Unbinder unbinder;
 
-
     private boolean isSound;
 
     public static MainFragment newInstance() {
@@ -61,14 +61,14 @@ public class MainFragment extends BaseFragment {
 
         isSound = HawkManager.getInstance().isKeySound();
 
-        updateSoundImage();
+        updateSoundImage(isSound);
 
-        setViewsOnclickListeners(view);
+        setViewsOnClickListeners(view);
         return view;
     }
 
     @OnClick({R.id.start_button, R.id.rules_button, R.id.faq_button, R.id.rate_button, R.id.sound_button})
-    public void setViewsOnclickListeners(View view) {
+    public void setViewsOnClickListeners(View view) {
         switch (view.getId()) {
             case R.id.start_button:
                 createFragmentWithBackStack(CategoriesFragment.newInstance(), null);
@@ -84,10 +84,11 @@ public class MainFragment extends BaseFragment {
                 break;
             case R.id.sound_button:
                 isSound = !isSound;
-                updateSoundImage();
+                updateSoundImage(isSound);
                 HawkManager.getInstance().setKeySound(isSound);
                 break;
-            default: break;
+            default:
+                break;
         }
     }
 
@@ -97,9 +98,29 @@ public class MainFragment extends BaseFragment {
         unbinder.unbind();
     }
 
-    private void updateSoundImage() {
-        if (!isSound) mSoundButton.setImageResource(R.drawable.volume_off);
-        else mSoundButton.setImageResource(R.drawable.volume_on);
+    private void updateSoundImage(boolean isSoundOn) {
+        if (isSoundOn) mSoundButton.setImageResource(R.drawable.volume_on);
+        else mSoundButton.setImageResource(R.drawable.volume_off);
+    }
+
+    private void showDialogForRate() {
+        new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
+                .setTitle(getString(R.string.dialog_title))
+                .setMessage(getString(R.string.dialog_rate_message))
+                .setCancelable(true)
+                .setPositiveButton(getString(R.string.positive_button), (dialogInterface, i) -> redirectToMarket())
+                .setNegativeButton(getString(R.string.negative_button), (dialogInterface, i) -> {})
+                .show();
+    }
+
+    private void redirectToMarket() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(getString(R.string.market_url)));
+        if (isActivityStarted(intent)) {
+            intent.setData(Uri.parse(getString(R.string.market_browser_url)));
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.error_open_market_message), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean isActivityStarted(Intent intent) {
@@ -108,27 +129,6 @@ public class MainFragment extends BaseFragment {
             return true;
         } catch (ActivityNotFoundException e) {
             return false;
-        }
-    }
-
-    private void showDialogForRate() {
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
-        alertDialog.setTitle(getString(R.string.dialog_title));
-        alertDialog.setMessage(getString(R.string.dialog_rate_message));
-        alertDialog.setCancelable(true);
-        alertDialog.setPositiveButton(getString(R.string.positive_button), (dialogInterface, i) -> redirectToMarket());
-        alertDialog.setNegativeButton(getString(R.string.negative_button), (dialogInterface, i) -> {
-        });
-        alertDialog.show();
-    }
-
-    private void redirectToMarket() {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("market://details?id=com.bignerdranch.android.cinemaquiz"));
-        if (isActivityStarted(intent)) {
-            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.bignerdranch.android.cinemaquiz"));
-        } else {
-            Toast.makeText(getActivity(), "Could not open Android market, please check if the market app installed or not. Try again later", Toast.LENGTH_SHORT).show();
         }
     }
 }
