@@ -497,7 +497,7 @@ public class QuestionFragment extends BaseFragment {
 
     private void setInterstitialAd() {
         mInterstitialAd = new InterstitialAd(Objects.requireNonNull(getActivity()));
-        mInterstitialAd.setAdUnitId(getString(R.string.test_interstitial_id));
+        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_id));
         AdRequest adRequest = new AdRequest.Builder().build();
         mInterstitialAd.loadAd(adRequest);
         mInterstitialAd.setAdListener(new AdListener() {
