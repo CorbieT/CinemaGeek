@@ -11,7 +11,6 @@ import com.bignerdranch.android.cinemaquiz.fragments.MainFragment;
 import com.bignerdranch.android.cinemaquiz.interfaces.FragmentHandler;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.MobileAds;
-import com.orhanobut.hawk.Hawk;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -23,7 +22,6 @@ public class MainActivity extends AppCompatActivity implements FragmentHandler {
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_fragment);
 
-        Hawk.init(this).build();
         MobileAds.initialize(this, getString(R.string.Ad_app_id));
 
         createFragment(MainFragment.newInstance());

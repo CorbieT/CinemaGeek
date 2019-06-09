@@ -11,7 +11,7 @@ import android.os.Build;
 import android.widget.Toast;
 
 import com.bignerdranch.android.cinemaquiz.R;
-import com.bignerdranch.android.cinemaquiz.common.HawkManager;
+import com.bignerdranch.android.cinemaquiz.common.SharedPrefHelper;
 
 import java.io.IOException;
 
@@ -34,8 +34,8 @@ public class SoundRep {
     private Context mContext;
 
     public SoundRep(Context context) {
-        mContext = context;
-        isSound = HawkManager.getInstance().isKeySound();
+        this.mContext = context;
+        isSound = new SharedPrefHelper(context).isKeySound();
         loadSoundPool();
     }
 

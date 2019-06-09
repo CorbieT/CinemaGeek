@@ -17,10 +17,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import com.bignerdranch.android.cinemaquiz.R;
-import com.bignerdranch.android.cinemaquiz.common.HawkManager;
+import com.bignerdranch.android.cinemaquiz.common.SharedPrefHelper;
 import com.bignerdranch.android.cinemaquiz.common.XmlPullParserHelper;
 import com.bignerdranch.android.cinemaquiz.model.AnswerCell;
 import com.bignerdranch.android.cinemaquiz.model.GameCell;
@@ -100,14 +99,14 @@ public class QuestionFragment extends BaseFragment {
     private final List<Integer> NUMBERS = new ArrayList<>(MAX_CELLS_COUNT);
 
     private int mQId = 0;
-    private Points mPoints = new Points();
+    private Points mPoints;
     private String categoryTitle = "";
     private boolean useSecondHint = false;
     private boolean bonusUsed = false;
     private SoundRep mSoundRep;
     private InterstitialAd mInterstitialAd;
     private RewardedVideoAd mRewardedVideoAd;
-    private final HawkManager hawkManager = HawkManager.getInstance();
+    private SharedPrefHelper sharedPrefHelper;
 
     public static QuestionFragment newInstance(String category) {
         Bundle bundle = new Bundle();
@@ -121,7 +120,9 @@ public class QuestionFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadBundle();
-        mQId = hawkManager.getQuestionId(categoryTitle);
+        sharedPrefHelper = new SharedPrefHelper(Objects.requireNonNull(getActivity()));
+        mPoints = new Points(sharedPrefHelper);
+        mQId = sharedPrefHelper.getQuestionId(categoryTitle);
         mQuestions = XmlPullParserHelper.getQuestionsFromXMLByCategoryTitle(getActivity(), categoryTitle);
     }
 
@@ -372,7 +373,7 @@ public class QuestionFragment extends BaseFragment {
         setPuzzleNextButton();
         incrementId();
         showInterstitialAd();
-        hawkManager.setQuestionId(categoryTitle, mQId);
+        sharedPrefHelper.setQuestionId(categoryTitle, mQId);
         animationShowNextButton();
         mPoints.increasePoints();
     }
@@ -496,7 +497,7 @@ public class QuestionFragment extends BaseFragment {
 
     private void setInterstitialAd() {
         mInterstitialAd = new InterstitialAd(Objects.requireNonNull(getActivity()));
-        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_id));
+        mInterstitialAd.setAdUnitId(getString(R.string.test_interstitial_id));
         AdRequest adRequest = new AdRequest.Builder().build();
         mInterstitialAd.loadAd(adRequest);
         mInterstitialAd.setAdListener(new AdListener() {
@@ -508,12 +509,12 @@ public class QuestionFragment extends BaseFragment {
     }
 
     private void showInterstitialAd() {
-        int mAdCounter = hawkManager.getAdCounter();
-        if (mAdCounter == 6) {
+        int mAdCounter = sharedPrefHelper.getAdCounter();
+        if (mAdCounter >= 6) {
             if (mInterstitialAd.isLoaded()) mInterstitialAd.show();
-            hawkManager.setAdCounter(0);
+            sharedPrefHelper.setAdCounter(0);
         } else {
-            hawkManager.setAdCounter(mAdCounter + 1);
+            sharedPrefHelper.setAdCounter(mAdCounter + 1);
         }
     }
 
@@ -595,7 +596,7 @@ public class QuestionFragment extends BaseFragment {
         } else {
             mQId = 0;
             mNextButton.setText(getString(R.string.end_game_text, categoryTitle));
-            hawkManager.setCategoryComplete(categoryTitle);
+            sharedPrefHelper.setCategoryComplete(categoryTitle);
         }
     }
 

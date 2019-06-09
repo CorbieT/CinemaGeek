@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.bignerdranch.android.cinemaquiz.R;
 import com.bignerdranch.android.cinemaquiz.common.XmlPullParserHelper;

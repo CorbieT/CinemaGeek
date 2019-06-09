@@ -16,7 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.bignerdranch.android.cinemaquiz.R;
-import com.bignerdranch.android.cinemaquiz.common.HawkManager;
+import com.bignerdranch.android.cinemaquiz.common.SharedPrefHelper;
 
 import java.util.Objects;
 
@@ -47,6 +47,7 @@ public class MainFragment extends BaseFragment {
 
     private Unbinder unbinder;
 
+    private SharedPrefHelper sharedPrefHelper;
     private boolean isSound;
 
     public static MainFragment newInstance() {
@@ -58,8 +59,8 @@ public class MainFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cinema_quiz, container, false);
         unbinder = ButterKnife.bind(this, view);
-
-        isSound = HawkManager.getInstance().isKeySound();
+        sharedPrefHelper = new SharedPrefHelper(Objects.requireNonNull(getActivity()));
+        isSound = sharedPrefHelper.isKeySound();
 
         updateSoundImage(isSound);
 
@@ -85,7 +86,7 @@ public class MainFragment extends BaseFragment {
             case R.id.sound_button:
                 isSound = !isSound;
                 updateSoundImage(isSound);
-                HawkManager.getInstance().setKeySound(isSound);
+                sharedPrefHelper.setKeySound(isSound);
                 break;
             default:
                 break;

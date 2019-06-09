@@ -12,7 +12,7 @@ import androidx.core.util.Consumer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bignerdranch.android.cinemaquiz.R;
-import com.bignerdranch.android.cinemaquiz.common.HawkManager;
+import com.bignerdranch.android.cinemaquiz.common.SharedPrefHelper;
 import com.bignerdranch.android.cinemaquiz.model.Category;
 
 import java.util.List;
@@ -25,11 +25,13 @@ public class CategoryAdapter extends RecyclerView.Adapter {
     private Context context;
     private List<Category> items;
     private Consumer<String> itemClick;
+    private SharedPrefHelper sharedPrefHelper;
 
     public CategoryAdapter(Context context, List<Category> items, Consumer<String> itemClick) {
         this.context = context;
         this.items = items;
         this.itemClick = itemClick;
+        this.sharedPrefHelper = new SharedPrefHelper(context);
     }
 
     @NonNull
@@ -43,7 +45,7 @@ public class CategoryAdapter extends RecyclerView.Adapter {
         Category category = items.get(position);
         ((CategoryHolder) holder).mTitleTextView.setText(category.getTitle());
 
-        if (HawkManager.getInstance().isCategoryComplete(category.getTitle())) ((CategoryHolder) holder).mFrameLayout.setBackgroundResource(R.drawable.category_list_complete);
+        if (sharedPrefHelper.isCategoryComplete(category.getTitle())) ((CategoryHolder) holder).mFrameLayout.setBackgroundResource(R.drawable.category_list_complete);
         else ((CategoryHolder) holder).mFrameLayout.setBackgroundResource(R.drawable.category_list);
     }
 
