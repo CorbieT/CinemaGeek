@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class Category {
 
-    private UUID mId;
+    private UUID id;
     private String mTitle;
 
     public Category() {
@@ -12,11 +12,11 @@ public class Category {
     }
 
     public Category(UUID id) {
-        mId = id;
+        this.id = id;
     }
 
     public UUID getId() {
-        return mId;
+        return id;
     }
 
     public String getTitle() {

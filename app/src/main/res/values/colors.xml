@@ -3,7 +3,7 @@
     <color name="colorPrimary">#181616</color>
     <color name="colorPrimaryDark">#181616</color>
     <color name="colorAccent">#000000</color>
-    <color name="isClickedButton">#00ff04</color>
+    <color name="correct_color">#00ff04</color>
     <color name="wrongAnswer">#ff0004</color>
     <color name="nextButtonColor">#000000</color>
     <color name="backgroundColor">#F0000000</color>
@@ -11,4 +11,5 @@
     <color name="disabled_bonus_button">#434343</color>
     <color name="clicked_main_menu">#434343</color>
     <color name="textColor">#FFD4D4D4</color>
+    <color name="mainBackgroundColor">#1e1e23</color>
 </resources>

@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="13dp"
-        android:layout_marginRight="13dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="13dp"
         android:orientation="horizontal">
 
         <TextView
@@ -23,9 +23,9 @@
             android:layout_gravity="start"
             android:layout_weight="1"
             android:textAlignment="textStart"
-            tools:text="Вопрос 14"
             android:textColor="#FFD4D4D4"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            tools:text="Вопрос 14" />
 
         <TextView
             android:id="@+id/hint_count"
@@ -34,55 +34,45 @@
             android:layout_gravity="end"
             android:layout_weight="1"
             android:textAlignment="textEnd"
-            tools:text="Подсказок 26"
             android:textColor="#FFD4D4D4"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            tools:text="Подсказок 26" />
 
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_above="@+id/answer_container"
         android:layout_below="@+id/title_container"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
         android:layout_marginLeft="13dp"
-        android:layout_marginRight="13dp"
         android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:paddingBottom="5dp">
+        android:layout_marginRight="13dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/rectangle_rounded"
+        android:scrollbars="none">
 
-        <ScrollView
-            android:id="@+id/scroll_view"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/rectangle_rounded"
-            android:scrollbars="none">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/question_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/question_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp"
-                    android:textAlignment="viewStart"
-                    tools:text="@android:string/autofill"
-                    android:textColor="#FFD4D4D4"
-                    android:textSize="19sp"/>
-            </LinearLayout>
-        </ScrollView>
-
-    </LinearLayout>
+                android:layout_gravity="start"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:textAlignment="viewStart"
+                android:textColor="@color/textColor"
+                android:textSize="16sp"
+                tools:text="@android:string/autofill" />
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/answer_container"
@@ -90,10 +80,10 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/hint_container"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:orientation="horizontal">
+        android:layout_marginBottom="5dp"
+        android:orientation="vertical">
 
     </LinearLayout>
 
@@ -103,9 +93,9 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/game_cell_container"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="10dp"
         android:layout_marginLeft="13dp"
         android:layout_marginRight="13dp"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
         <Button
@@ -118,7 +108,7 @@
             android:background="@drawable/hint_button"
             android:text="@string/first_hint"
             android:textColor="#ffffff"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/hint_bonus"
@@ -129,8 +119,8 @@
             android:layout_weight="1"
             android:background="@drawable/bonus_button"
             android:enabled="false"
-            android:textColor="@color/disabled_bonus_button"
-            android:text="@string/bonus_hint"/>
+            android:text="@string/bonus_hint"
+            android:textColor="@color/disabled_bonus_button" />
 
         <Button
             android:id="@+id/hint_2"
@@ -142,7 +132,7 @@
             android:background="@drawable/hint_button"
             android:text="@string/second_hint"
             android:textColor="#ffffff"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
     </LinearLayout>
 
@@ -151,32 +141,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/first_row_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/second_row_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/third_row_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-        </LinearLayout>
-    </LinearLayout>
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical" />
 
     <Button
         android:id="@+id/next_button"
@@ -186,6 +154,6 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:text="@string/next_text"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
 </RelativeLayout>

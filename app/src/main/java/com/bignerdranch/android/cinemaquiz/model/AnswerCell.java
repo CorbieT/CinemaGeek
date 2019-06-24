@@ -11,73 +11,63 @@ import com.bignerdranch.android.cinemaquiz.R;
 
 public class AnswerCell extends AppCompatTextView {
 
-    private static final char EMPTY = ' ';
-
-    private GameCell mGameCell = null;
-    private char mAnswerSymbol;
-    private char mCorrectSymbol;
+    private String correctSymbol;
+    private int gameCellPickedId;
+    private boolean isPrompted;
 
     public AnswerCell(Context context) {
         super(context);
     }
 
-    public AnswerCell(Context context, char correctSymbol, int wordLength) {
+    public AnswerCell(Context context, String correctSymbol) {
         super(context);
-        setMinEms(1);
-        setGravity(Gravity.CENTER_HORIZONTAL);
-        setTextColor(ContextCompat.getColor(getContext(), R.color.textColor));
-        setBackgroundResource(R.drawable.bottom_stroke);
-        mCorrectSymbol = correctSymbol;
-
-        if (wordLength > 13) setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        else setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-
-        setEmpty();
+        this.correctSymbol = correctSymbol;
+        this.setMinEms(1);
+        this.setGravity(Gravity.CENTER_HORIZONTAL);
+        this.setTextColor(ContextCompat.getColor(getContext(), R.color.textColor));
+        this.setBackgroundResource(R.drawable.bottom_stroke);
+        this.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+        this.setText("");
     }
 
-    private void setEmpty() {
-        mAnswerSymbol = EMPTY;
-        setText(String.valueOf(mAnswerSymbol));
+    @Override
+    public String getText() {
+        return super.getText().toString();
     }
 
     public boolean isEmpty() {
-        return mAnswerSymbol == EMPTY;
+        return this.getText().isEmpty();
     }
 
-    public char getAnswerSymbol() {
-        return mAnswerSymbol;
-    }
-
-    public void setAnswerSymbol(GameCell gameCell) {
-        mGameCell = gameCell;
-        mAnswerSymbol = gameCell.getGameSymbol();
-        this.setText(String.valueOf(mAnswerSymbol));
+    public String getCorrectSymbol() {
+        return correctSymbol;
     }
 
     public void showCorrectSymbol() {
-        mAnswerSymbol = mCorrectSymbol;
-        setText(String.valueOf(mAnswerSymbol));
-        setTextColor(ContextCompat.getColor(getContext(), R.color.isClickedButton));
-        setBackgroundResource(R.drawable.bottom_stroke_green);
+        this.setText(correctSymbol);
+        this.setTextColor(ContextCompat.getColor(getContext(), R.color.correct_color));
+        this.setBackgroundResource(R.drawable.bottom_stroke_green);
+        this.isPrompted = true;
     }
 
-    public boolean compareAnswerSymbols() {
-        return mAnswerSymbol == mCorrectSymbol;
+    public boolean isCorrectSymbol() {
+        if (isEmpty()) return false;
+        return this.getText().equals(correctSymbol);
     }
 
     public void clearAnswerCell() {
-        if (this.mGameCell != null) {
-            this.mGameCell.showCell();
-            setEmpty();
-            this.mGameCell = null;
-        }
+        this.setText("");
     }
 
-    public GameCell getGameCell() {
-        return mGameCell;
+    public int getGameCellPickedId() {
+        return gameCellPickedId;
     }
 
-    public char getCorrectSymbol() {
-        return mCorrectSymbol;
+    public void setGameCellPickedId(int gameCellPickedId) {
+        this.gameCellPickedId = gameCellPickedId;
+    }
+
+    public boolean isPrompted() {
+        return isPrompted;
     }
 }

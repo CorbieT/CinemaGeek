@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bignerdranch.android.cinemaquiz.R;
 import com.bignerdranch.android.cinemaquiz.fragments.MainFragment;
@@ -36,10 +37,9 @@ public class MainActivity extends AppCompatActivity implements FragmentHandler {
 
     @Override
     public void createFragmentWithBackStack(Fragment fragment, String tag) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, fragment, tag)
-                .addToBackStack(null)
-                .commit();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction().addToBackStack(null);
+        fragmentTransaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter_back, R.anim.exit_back);
+        fragmentTransaction.replace(R.id.fragmentContainer, fragment, tag).commit();
     }
 
 }

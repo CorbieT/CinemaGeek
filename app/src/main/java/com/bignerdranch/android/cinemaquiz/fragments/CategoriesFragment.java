@@ -36,10 +36,10 @@ public class CategoriesFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.categories_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
         categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        categoriesRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(categoriesRecyclerView.getContext(), R.anim.layout_animation));
+        categoriesRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(categoriesRecyclerView.getContext(), R.anim.layout_animation_right));
         categoriesRecyclerView.setAdapter(new CategoryAdapter(getActivity(),
                 XmlPullParserHelper.getCategoriesFromXml(getActivity()),
-                s -> createFragmentWithBackStack(QuestionFragment.newInstance(s), null)));
+                s -> createFragmentWithBackStack(QuestionFragment.newInstance(s))));
         return view;
     }
 

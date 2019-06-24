@@ -2,33 +2,33 @@ package com.bignerdranch.android.cinemaquiz.model;
 
 public class Question {
 
-    private int mId;
-    private String mQuestionText;
-    private String mAnswer;
+    private int id;
+    private String questionText;
+    private String answerText;
 
-    public Question(int mId, String mQuestionText, String mAnswer) {
-        this.mId = mId;
-        this.mQuestionText = mQuestionText;
-        this.mAnswer = mAnswer;
+    public Question(int id, String questionText, String answerText) {
+        this.id = id;
+        this.questionText = questionText;
+        this.answerText = answerText;
     }
 
     public int getId() {
-        return mId;
+        return id;
     }
 
     public String getQuestionText() {
-        return mQuestionText;
+        return questionText;
     }
 
     public void setQuestionText(String questionText) {
-        mQuestionText = questionText;
+        this.questionText = questionText;
     }
 
     public String getAnswer() {
-        return mAnswer;
+        return answerText;
     }
 
     public void setAnswer(String answer) {
-        mAnswer = answer;
+        answerText = answer;
     }
 }

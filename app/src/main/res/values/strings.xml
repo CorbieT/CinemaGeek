@@ -3,8 +3,10 @@
     <!--main fragment-->
     <string name="main_title">ВИКТОРИНА\nКИНОГИК</string>
     <string name="start_btn_text">ИГРАТЬ</string>
+    <string name="about_btn_text">О НАС</string>
     <string name="rules_btn_text">ПРАВИЛА</string>
     <string name="faq_btn_text">FAQ</string>
+    <string name="sound_btn_text">ЗВУК:</string>
     <!--question fragment-->
     <string name="first_hint">Убрать лишние</string>
     <string name="second_hint">Показать букву</string>
@@ -25,10 +27,22 @@
     <string name="test_interstitial_id">ca-app-pub-3940256099942544/1033173712</string>
     <string name="rewarded_video_id">ca-app-pub-6226897137661330/2064274105</string>
     <string name="test_rewarded_video_id">ca-app-pub-3940256099942544/5224354917</string>
-    <!--rate app links-->
+    <!--app links-->
     <string name="market_url">market://details?id=com.bignerdranch.android.cinemaquiz</string>
     <string name="market_browser_url">https://play.google.com/store/apps/details?id=com.bignerdranch.android.cinemaquiz</string>
+    <string name="email_link">cinema_geek@mail.ru</string>
     <!--error messages-->
     <string name="error_open_market_message">Не удалось открыть Android-маркет, проверьте, установлено ли приложение маркета и попробуйте снова.</string>
     <string name="error_load_sound_file_message">Ошибка при загрузке звукового файла.</string>
+    <!--about text-->
+    <string name="about_text">Привет! Меня зовут Роман. Я Android-разработчик и создатель этого приложения.
+        Я очень рад видеть тебя здесь. Надеюсь ты найдешь то что тебе интересно и в процессе получишь только положительные эмоции)
+        \nЕсли у тебя есть ко мне вопросы, предложения или может быть у тебя есть идея для интересного вопроса или категории, ты всегда можешь мне написать.
+        Ссылку на почту для этого ты найдешь внизу.
+        Пиши туда же, если тобой был обнаружен баг или опечатка. Я обязательно это исправлю.
+    \nТы так же можешь оставить свой отзыв на странице в маркете. Это поможет в развитии приложения.
+    \nЯ желаю тебе приятной игры)
+    \nДа пребудет с тобой Сила)</string>
+    <!--other-->
+    <string name="send_email">Написать разработчику</string>
 </resources>

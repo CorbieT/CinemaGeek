@@ -1,19 +1,15 @@
 package com.bignerdranch.android.cinemaquiz.fragments;
 
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 
 import com.bignerdranch.android.cinemaquiz.R;
 import com.bignerdranch.android.cinemaquiz.common.SharedPrefHelper;
@@ -28,22 +24,19 @@ import butterknife.Unbinder;
 public class MainFragment extends BaseFragment {
 
     @BindView(R.id.main_title)
-    TextView mTitleButton;
+    TextView titleButton;
 
     @BindView(R.id.start_button)
-    TextView mStartButton;
+    TextView startButton;
 
-    @BindView(R.id.rules_button)
-    TextView mRulesButton;
-
-    @BindView(R.id.faq_button)
-    TextView mFaqButton;
+    @BindView(R.id.about_button)
+    TextView aboutButton;
 
     @BindView(R.id.sound_button)
-    ImageButton mSoundButton;
+    ImageButton soundButton;
 
-    @BindView(R.id.rate_button)
-    ImageButton mRateButton;
+    @BindView(R.id.sound_container)
+    LinearLayout soundContainer;
 
     private Unbinder unbinder;
 
@@ -57,7 +50,7 @@ public class MainFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_cinema_quiz, container, false);
+        View view = inflater.inflate(R.layout.main_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
         sharedPrefHelper = new SharedPrefHelper(Objects.requireNonNull(getActivity()));
         isSound = sharedPrefHelper.isKeySound();
@@ -68,22 +61,16 @@ public class MainFragment extends BaseFragment {
         return view;
     }
 
-    @OnClick({R.id.start_button, R.id.rules_button, R.id.faq_button, R.id.rate_button, R.id.sound_button})
+    @OnClick({R.id.start_button, R.id.about_button, R.id.sound_container})
     public void setViewsOnClickListeners(View view) {
         switch (view.getId()) {
             case R.id.start_button:
-                createFragmentWithBackStack(CategoriesFragment.newInstance(), null);
+                createFragmentWithBackStack(CategoriesFragment.newInstance());
                 break;
-            case R.id.rules_button:
-                createFragmentWithBackStack(RulesFragment.newInstance(), null);
+            case R.id.about_button:
+                createFragmentWithBackStack(AboutFragment.newInstance());
                 break;
-            case R.id.faq_button:
-                createFragmentWithBackStack(FaqFragment.newInstance(), null);
-                break;
-            case R.id.rate_button:
-                showDialogForRate();
-                break;
-            case R.id.sound_button:
+            case R.id.sound_container:
                 isSound = !isSound;
                 updateSoundImage(isSound);
                 sharedPrefHelper.setKeySound(isSound);
@@ -100,36 +87,8 @@ public class MainFragment extends BaseFragment {
     }
 
     private void updateSoundImage(boolean isSoundOn) {
-        if (isSoundOn) mSoundButton.setImageResource(R.drawable.volume_on);
-        else mSoundButton.setImageResource(R.drawable.volume_off);
+        if (isSoundOn) soundButton.setImageResource(R.drawable.volume_on);
+        else soundButton.setImageResource(R.drawable.volume_off);
     }
 
-    private void showDialogForRate() {
-        new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
-                .setTitle(getString(R.string.dialog_title))
-                .setMessage(getString(R.string.dialog_rate_message))
-                .setCancelable(true)
-                .setPositiveButton(getString(R.string.positive_button), (dialogInterface, i) -> redirectToMarket())
-                .setNegativeButton(getString(R.string.negative_button), (dialogInterface, i) -> {})
-                .show();
-    }
-
-    private void redirectToMarket() {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(getString(R.string.market_url)));
-        if (isActivityStarted(intent)) {
-            intent.setData(Uri.parse(getString(R.string.market_browser_url)));
-        } else {
-            Toast.makeText(getActivity(), getString(R.string.error_open_market_message), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private boolean isActivityStarted(Intent intent) {
-        try {
-            startActivity(intent);
-            return true;
-        } catch (ActivityNotFoundException e) {
-            return false;
-        }
-    }
 }

@@ -11,39 +11,15 @@ import com.bignerdranch.android.cinemaquiz.R;
 
 public class GameCell extends AppCompatTextView {
 
-    private char mGameSymbol;
-    private boolean isClicked = false;
     private boolean isRightSymbol = false;
-
-    public GameCell(Context context, char mGameSymbol, boolean isClicked, boolean isRightSymbol) {
-        super(context);
-        this.mGameSymbol = mGameSymbol;
-        this.isClicked = isClicked;
-        this.isRightSymbol = isRightSymbol;
-
-        setGravity(Gravity.CENTER_HORIZONTAL);
-        setMinEms(1);
-        setTextSize(28);
-        setTextColor(ContextCompat.getColor(getContext(), R.color.textColor));
-        this.setBackgroundResource(R.drawable.rectangle_rounded);
-    }
 
     public GameCell(Context context) {
         super(context);
-        setGravity(Gravity.CENTER_HORIZONTAL);
-        setMinEms(1);
-        setTextSize(28);
-        setTextColor(ContextCompat.getColor(getContext(), R.color.textColor));
+        this.setGravity(Gravity.CENTER_HORIZONTAL);
+        this.setMinEms(1);
+        this.setTextSize(28);
+        this.setTextColor(ContextCompat.getColor(getContext(), R.color.textColor));
         this.setBackgroundResource(R.drawable.rectangle_rounded);
-    }
-
-    public char getGameSymbol() {
-        return mGameSymbol;
-    }
-
-    public void setGameSymbol(char gameSymbol) {
-        mGameSymbol = gameSymbol;
-        this.setText(String.valueOf(mGameSymbol));
     }
 
     public boolean isRightSymbol() {
@@ -54,21 +30,20 @@ public class GameCell extends AppCompatTextView {
         isRightSymbol = rightSymbol;
     }
 
-    public boolean isClicked() {
-        return isClicked;
-    }
-
-    public void setClicked(boolean clicked) {
-        isClicked = clicked;
-    }
-
     public void showCell() {
         this.setVisibility(View.VISIBLE);
-        isClicked = false;
+    }
+
+    public boolean isVisible() {
+        return this.getVisibility() == View.VISIBLE;
+    }
+
+    @Override
+    public String getText() {
+        return super.getText().toString();
     }
 
     public void hideCell() {
-        if (!isClicked)
-            this.setVisibility(View.INVISIBLE);
+        this.setVisibility(View.INVISIBLE);
     }
 }

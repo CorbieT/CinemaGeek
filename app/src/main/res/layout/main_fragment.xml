@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_menu_v1"
+    tools:context="com.bignerdranch.android.cinemaquiz.activities.MainActivity">
+
+    <TextView
+        android:id="@+id/main_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/top_bottom_stroke"
+        android:fontFamily="@font/trixie"
+        android:text="@string/main_title"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#ffffff"
+        android:visibility="gone"
+        android:textSize="42sp"/>
+
+    <LinearLayout
+        android:id="@+id/main_buttons_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true">
+
+        <TextView
+            android:id="@+id/start_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/trixie"
+            android:text="@string/start_btn_text"
+            android:textColor="#ffffff"
+            android:textSize="42sp" />
+
+        <LinearLayout
+            android:id="@+id/sound_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/trixie"
+                android:text="@string/sound_btn_text"
+                android:textColor="#ffffff"
+                android:textSize="42sp"/>
+
+            <ImageButton
+                android:id="@+id/sound_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/volume_on"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/about_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/trixie"
+            android:text="@string/about_btn_text"
+            android:textColor="#ffffff"
+            android:textSize="42sp"/>
+    </LinearLayout>
+
+</RelativeLayout>

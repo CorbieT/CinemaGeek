@@ -3,8 +3,10 @@ package com.bignerdranch.android.cinemaquiz.fragments;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,23 +17,20 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
 import com.bignerdranch.android.cinemaquiz.R;
+import com.bignerdranch.android.cinemaquiz.common.AdHelper;
 import com.bignerdranch.android.cinemaquiz.common.SharedPrefHelper;
 import com.bignerdranch.android.cinemaquiz.common.XmlPullParserHelper;
+import com.bignerdranch.android.cinemaquiz.fragments.dialogs.BonusDialogFragment;
 import com.bignerdranch.android.cinemaquiz.model.AnswerCell;
 import com.bignerdranch.android.cinemaquiz.model.GameCell;
 import com.bignerdranch.android.cinemaquiz.model.Points;
 import com.bignerdranch.android.cinemaquiz.model.Question;
-import com.bignerdranch.android.cinemaquiz.model.SoundRep;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
+import com.bignerdranch.android.cinemaquiz.repositories.SoundRep;
+import com.bignerdranch.android.cinemaquiz.utils.Utils;
 import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import java.util.ArrayList;
@@ -52,60 +51,55 @@ import static com.bignerdranch.android.cinemaquiz.common.Constants.MAX_CELLS_COU
 public class QuestionFragment extends BaseFragment {
 
     @BindView(R.id.hint_count)
-    TextView mHintTitle;
+    TextView hintTitle;
 
     @BindView(R.id.question_text)
-    TextView mQuestionText;
+    TextView questionText;
 
     @BindView(R.id.question_number)
-    TextView mQuestionTitle;
+    TextView questionTitle;
 
     @BindView(R.id.next_button)
-    Button mNextButton;
+    Button nextButton;
 
     @BindView(R.id.hint_1)
-    Button mButtonHint1;
+    Button buttonHint1;
 
     @BindView(R.id.hint_2)
-    Button mButtonHint2;
+    Button buttonHint2;
 
     @BindView(R.id.hint_bonus)
-    Button mButtonBonus;
+    Button buttonBonus;
 
     @BindView(R.id.scroll_view)
-    ScrollView mScrollView;
+    ScrollView scrollView;
 
     @BindView(R.id.answer_container)
-    LinearLayout mAnswerContainer;
+    LinearLayout answerContainer;
 
-    @BindView(R.id.first_row_container)
-    LinearLayout mFirstRowContainer;
-
-    @BindView(R.id.second_row_container)
-    LinearLayout mSecondRowContainer;
-
-    @BindView(R.id.third_row_container)
-    LinearLayout mThirdRowContainer;
+    @BindView(R.id.game_cell_container)
+    LinearLayout gameCellContainer;
 
     private Unbinder unbinder;
 
     private static final String CATEGORY_TAG = "CATEGORY_TITLE";
 
     private static final int WRAP_CONTENT = LinearLayout.LayoutParams.WRAP_CONTENT;
+    private static final int MATCH_PARENT = LinearLayout.LayoutParams.MATCH_PARENT;
+    private LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT, 1.0f);
+    private LinearLayout.LayoutParams cellLayoutParams = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 1.0f);
 
-    private List<GameCell> mGameCells = new ArrayList<>();
-    private List<AnswerCell> mAnswerCells = new ArrayList<>();
-    private List<Question> mQuestions = new ArrayList<>();
+    private List<GameCell> gameCells = new ArrayList<>();
+    private List<AnswerCell> answerCells = new ArrayList<>();
+    private List<Question> questions = new ArrayList<>();
     private final List<Integer> NUMBERS = new ArrayList<>(MAX_CELLS_COUNT);
 
     private int mQId = 0;
-    private Points mPoints;
+    private Points points;
     private String categoryTitle = "";
     private boolean useSecondHint = false;
-    private boolean bonusUsed = false;
-    private SoundRep mSoundRep;
-    private InterstitialAd mInterstitialAd;
-    private RewardedVideoAd mRewardedVideoAd;
+    private SoundRep soundRep;
+    private AdHelper adHelper;
     private SharedPrefHelper sharedPrefHelper;
 
     public static QuestionFragment newInstance(String category) {
@@ -121,9 +115,9 @@ public class QuestionFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         loadBundle();
         sharedPrefHelper = new SharedPrefHelper(Objects.requireNonNull(getActivity()));
-        mPoints = new Points(sharedPrefHelper);
+        points = new Points(sharedPrefHelper);
         mQId = sharedPrefHelper.getQuestionId(categoryTitle);
-        mQuestions = XmlPullParserHelper.getQuestionsFromXMLByCategoryTitle(getActivity(), categoryTitle);
+        questions = XmlPullParserHelper.getQuestionsFromXMLByCategoryTitle(getActivity(), categoryTitle);
     }
 
     @Nullable
@@ -138,30 +132,6 @@ public class QuestionFragment extends BaseFragment {
         return view;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
-    @Override
-    public void onResume() {
-        mRewardedVideoAd.resume(getActivity());
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        mRewardedVideoAd.pause(getActivity());
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        mRewardedVideoAd.destroy(getActivity());
-        super.onDestroy();
-    }
-
     private void loadBundle() {
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -169,11 +139,16 @@ public class QuestionFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
     private void initViewComponents() {
-        initRewardedVideo();
-        mSoundRep = new SoundRep(getActivity());
-        setInterstitialAd();
-        initGameField();
+        initAdMob();
+        soundRep = new SoundRep(getActivity());
+        createGameField();
         initNumb();
     }
 
@@ -201,32 +176,32 @@ public class QuestionFragment extends BaseFragment {
     private void setNextButtonBackground() {
         switch (categoryTitle) {
             case "УЖАСЫ":
-                mNextButton.setBackgroundResource(R.drawable.smiley_blood_bg);
+                nextButton.setBackgroundResource(R.drawable.smiley_blood_bg);
                 break;
             case "ГОЛОВОЛОМКИ":
-                mNextButton.setBackgroundResource(R.drawable.smiley_puzzle);
+                nextButton.setBackgroundResource(R.drawable.smiley_puzzle);
                 break;
             case "КИНОГИК":
-                mNextButton.setBackgroundResource(R.drawable.smiley_geek_bg);
+                nextButton.setBackgroundResource(R.drawable.smiley_geek_bg);
                 break;
             case "СУПЕР":
-                mNextButton.setBackgroundResource(R.drawable.smiley_haha_bg);
+                nextButton.setBackgroundResource(R.drawable.smiley_haha_bg);
                 break;
             default:
-                mNextButton.setBackgroundResource(R.drawable.smiley_bg);
+                nextButton.setBackgroundResource(R.drawable.smiley_bg);
         }
     }
 
     private void setPuzzleNextButton() {
         switch (categoryTitle) {
             case "СОЛЯНКА-2":
-                if (mQId == 32) mNextButton.setBackgroundResource(R.drawable.smiley_evolution_bg);
+                if (mQId == 32) nextButton.setBackgroundResource(R.drawable.smiley_evolution_bg);
                 break;
             case "СУПЕР":
-                if (mQId == 27) mNextButton.setBackgroundResource(R.drawable.smiley_false_god_bg);
+                if (mQId == 27) nextButton.setBackgroundResource(R.drawable.smiley_false_god_bg);
                 break;
             case "СЕРИАЛЫ":
-                if (mQId == 9) mNextButton.setBackgroundResource(R.drawable.smiley_missme_bg);
+                if (mQId == 9) nextButton.setBackgroundResource(R.drawable.smiley_missme_bg);
         }
     }
 
@@ -234,15 +209,15 @@ public class QuestionFragment extends BaseFragment {
         /**
          * imQId + 1 - because indexing start from 0
          */
-        mQuestionTitle.setText(getString(R.string.question_title, mQId + 1));
-        mHintTitle.setText(getString(R.string.hints_title, mPoints.getCurrentPoints()));
-        mQuestionText.setText(mQuestions.get(mQId).getQuestionText());
-        createAnswerField(mQuestions.get(mQId).getAnswer().toUpperCase());
+        questionTitle.setText(getString(R.string.question_title, mQId + 1));
+        hintTitle.setText(getString(R.string.hints_title, points.getCurrentPoints()));
+        questionText.setText(questions.get(mQId).getQuestionText());
+        createAnswerField(questions.get(mQId).getAnswer().toUpperCase());
         showCellsGameField();
-        initGameCellsWithAnswer(removeSpaces(mQuestions.get(mQId).getAnswer()));
-        mScrollView.scrollTo(0, 0);
-        mButtonHint1.setVisibility(View.VISIBLE);
-        mButtonHint2.setVisibility(View.VISIBLE);
+        initGameCellsWithAnswer(Utils.removeSpaces(questions.get(mQId).getAnswer()));
+        scrollView.scrollTo(0, 0);
+        buttonHint1.setVisibility(View.VISIBLE);
+        buttonHint2.setVisibility(View.VISIBLE);
     }
 
     private void initGameCellsWithAnswer(@NonNull String answer) {
@@ -253,11 +228,10 @@ public class QuestionFragment extends BaseFragment {
         setAnswerInGameField(answer);
     }
 
-    //FIXME Collections.shuffle() refactor for mGameCells
     private void initGameCellsWithRandomChars() {
         Random mRandom = new Random();
-        for (GameCell gameCell : mGameCells) {
-            gameCell.setGameSymbol(ALPHABET.charAt(mRandom.nextInt(ALPHABET_SIZE)));
+        for (GameCell gameCell : gameCells) {
+            gameCell.setText(String.valueOf(ALPHABET.charAt(mRandom.nextInt(ALPHABET_SIZE))));
             gameCell.setRightSymbol(false);
         }
     }
@@ -265,183 +239,233 @@ public class QuestionFragment extends BaseFragment {
     private void setAnswerInGameField(@NonNull String answer) {
         Collections.shuffle(NUMBERS);
         for (int i = 0; i < answer.length(); i++) {
-            mGameCells.get((NUMBERS.get(i))).setRightSymbol(true);
-            mGameCells.get((NUMBERS.get(i))).setGameSymbol(answer.charAt(i));
+            gameCells.get((NUMBERS.get(i))).setRightSymbol(true);
+            gameCells.get((NUMBERS.get(i))).setText(String.valueOf(answer.charAt(i)));
         }
     }
 
     private void showCellsGameField() {
-        for (GameCell gameCell : mGameCells) {
+        for (GameCell gameCell : gameCells) {
             gameCell.showCell();
         }
     }
 
-    @NonNull
-    private String removeSpaces(String word) {
-        return word.replaceAll("\\s", "").toUpperCase();
-    }
-
-    private void initGameField() {
-        mFirstRowContainer.removeAllViews();
-        mSecondRowContainer.removeAllViews();
-        mThirdRowContainer.removeAllViews();
-
-        setRowContainer(mFirstRowContainer);
-        setRowContainer(mSecondRowContainer);
-        setRowContainer(mThirdRowContainer);
-    }
-
-    private void setRowContainer(LinearLayout linearLayout) {
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 1.0f);
-        layoutParams.setMargins(3, 3, 3, 3);
-        for (int i = 0; i < 6; i++) {
-            final GameCell gameCell = new GameCell(getActivity());
-            gameCell.setLayoutParams(layoutParams);
-            linearLayout.addView(gameCell);
-            mGameCells.add(gameCell);
-            gameCell.setOnClickListener(view -> {
-                mSoundRep.playSound(mSoundRep.getButtonClickSound());
-                if (useSecondHint) setDefaultImageSecondHint();
-                for (AnswerCell answerCell : mAnswerCells) {
-                    if (answerCell.isEmpty() && !gameCell.isClicked()) {
-                        answerCell.setAnswerSymbol(gameCell);
-                        gameCell.hideCell();
-                        gameCell.setClicked(true);
-                        checkForWin();
-                        return;
-                    }
-                }
-            });
-        }
-    }
-
     private void createAnswerField(String answer) {
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        if (answer.length() > 13) layoutParams.setMargins(0, 0, 5, 0);
-        else layoutParams.setMargins(0, 0, 10, 0);
+        LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 1.0f);
+        linearLayoutParams.setMargins(0, 0, 0, 20);
+        linearLayoutParams.gravity = Gravity.CENTER;
+        cellLayoutParams.setMargins(0, 0, 10, 0);
+        answerCells.clear();
+        answerContainer.removeAllViewsInLayout();
 
-        mAnswerCells.clear();
-        mAnswerContainer.removeAllViewsInLayout();
-
-        for (int i = 0; i < answer.length(); i++) {
-            if (answer.charAt(i) != ' ') {
-                final AnswerCell answerCell = new AnswerCell(getActivity(), answer.charAt(i), answer.length());
-                mAnswerContainer.addView(answerCell, layoutParams);
-                mAnswerCells.add(answerCell);
-                answerCell.setOnClickListener(view -> {
-                    if (useSecondHint) {
-                        if (answerCell.isEmpty()) {
-                            mSoundRep.playSound(mSoundRep.getButtonClickSound());
-                            mPoints.useSecondHint();
-                            mHintTitle.setText(getString(R.string.hints_title, mPoints.getCurrentPoints()));
-                            hidePickedCell(answerCell.getCorrectSymbol());
-                            answerCell.showCorrectSymbol();
-                            checkForWin();
-                        }
-                        setDefaultImageSecondHint();
-                        return;
+        String[] answerWords = Utils.getSplitBySpacesString(answer);
+        for (String answerWord : answerWords) {
+            //FIXME fix this shit below
+            if (answerWord.length() > 10) {
+                String splittedWord = answerWord.substring(0, 9);
+                for (int i = 0; i < 2; i++) {
+                    LinearLayout linearLayout = new LinearLayout(getActivity());
+                    answerContainer.addView(linearLayout, linearLayoutParams);
+                    for (int j = 0; j < splittedWord.length(); j++) {
+                        linearLayout.addView(createAnswerCell(String.valueOf(splittedWord.charAt(j))), cellLayoutParams);
                     }
-                    if (!answerCell.isEmpty() && (answerCell.getGameCell() != null)) {
-                        mSoundRep.playSound(mSoundRep.getButtonClickSound());
-                        answerCell.clearAnswerCell();
-                    }
-                });
-            } else {
-                TextView emptyTextView = new TextView(getActivity());
-                emptyTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 5);
-                emptyTextView.setMinEms(1);
-                emptyTextView.setVisibility(View.INVISIBLE);
-                mAnswerContainer.addView(emptyTextView, layoutParams);
+                    if (i == 0) { linearLayout.addView(createDashView(), cellLayoutParams); }
+                    splittedWord = answerWord.substring(9);
+                }
+                break;
+            }
+            LinearLayout linearLayout = new LinearLayout(getActivity());
+            answerContainer.addView(linearLayout, linearLayoutParams);
+            for (int i = 0; i < answerWord.length(); i++) {
+                linearLayout.addView(createAnswerCell(String.valueOf(answerWord.charAt(i))), cellLayoutParams);
             }
         }
+    }
+
+    private AnswerCell createAnswerCell(String correctSymbol) {
+        final AnswerCell answerCell = new AnswerCell(getActivity(), String.valueOf(correctSymbol));
+        answerCell.setOnClickListener(view -> {
+            if (useSecondHint) {
+                if (answerCell.isEmpty()) {
+                    soundRep.playSound(soundRep.getButtonClickSound());
+                    points.useSecondHint();
+                    hintTitle.setText(getString(R.string.hints_title, points.getCurrentPoints()));
+                    hidePromptedGameCell(answerCell.getCorrectSymbol());
+                    answerCell.showCorrectSymbol();
+                    checkForWin();
+                }
+                setDefaultImageSecondHint();
+                return;
+            }
+            if (!answerCell.isEmpty() && !answerCell.isPrompted()) {
+                soundRep.playSound(soundRep.getButtonClickSound());
+                gameCells.get(answerCell.getGameCellPickedId()).showCell();
+                answerCell.clearAnswerCell();
+            }
+        });
+        answerCells.add(answerCell);
+        return answerCell;
+    }
+
+    private TextView createDashView() {
+        TextView textView = new TextView(getActivity());
+        textView.setVisibility(View.VISIBLE);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        textView.setMinEms(1);
+        textView.setTextColor(getResources().getColor(R.color.textColor));
+        textView.setText("—");
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        textView.setTypeface(null, Typeface.BOLD);
+        return textView;
+    }
+
+    private void createGameField() {
+        gameCellContainer.removeAllViews();
+        linearLayoutParams.setMargins(0, 0, 0, 15);
+        cellLayoutParams.setMargins(3, 3, 3, 3);
+        for (int i = 0; i < 3; i++) {
+            LinearLayout linearLayout = new LinearLayout(getActivity());
+            gameCellContainer.addView(linearLayout, linearLayoutParams);
+            for (int j = 0; j < 6; j++) {
+                linearLayout.addView(createGameCell());
+            }
+        }
+//        createRulesButtons();
+    }
+
+    private GameCell createGameCell() {
+        final GameCell gameCell = new GameCell(getActivity());
+        gameCells.add(gameCell);
+        gameCell.setLayoutParams(cellLayoutParams);
+        gameCell.setOnClickListener(view -> {
+            soundRep.playSound(soundRep.getButtonClickSound());
+            if (useSecondHint) setDefaultImageSecondHint();
+            for (AnswerCell answerCell : answerCells) {
+                if (answerCell.isEmpty()) {
+                    answerCell.setText(gameCell.getText());
+                    answerCell.setGameCellPickedId(gameCells.indexOf(gameCell));
+                    gameCell.hideCell();
+                    checkForWin();
+                    return;
+                }
+            }
+        });
+        return gameCell;
+    }
+
+    private void createRulesButtons() {
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 1.0f);
+        LinearLayout ruleButtonsContainer = new LinearLayout(getActivity());
+        for (int i = 0; i < 3; i++) {
+            if (i == 1) {
+                layoutParams.weight = 1.0f;
+            } else {
+                layoutParams.weight = 3.0f;
+            }
+            ruleButtonsContainer.addView(new Button(getActivity()), layoutParams);
+        }
+        gameCellContainer.addView(ruleButtonsContainer);
     }
 
     private void checkForWin() {
-        for (AnswerCell answerCell : mAnswerCells) {
-            if (answerCell.isEmpty()) return;
-        }
-
-        for (AnswerCell answerCell : mAnswerCells) {
-            if (!answerCell.compareAnswerSymbols()) {
-                for (AnswerCell animationCell : mAnswerCells) {
-                    animationWrong(animationCell);
-                }
-                return;
-            }
+        if (hasEmptyAnswerFields()) return;
+        if (hasIncorrectAnswerSymbol()) {
+            playWrongAnimationAnswer();
+            return;
         }
 
         setPuzzleNextButton();
         incrementId();
-        showInterstitialAd();
+        checkForShowInterstitialAd();
         sharedPrefHelper.setQuestionId(categoryTitle, mQId);
         animationShowNextButton();
-        mPoints.increasePoints();
+        points.increasePoints();
+    }
+
+    private boolean hasEmptyAnswerFields() {
+        for (AnswerCell answerCell : answerCells) {
+            if (answerCell.isEmpty()) return true;
+        }
+        return false;
+    }
+
+    private boolean hasIncorrectAnswerSymbol() {
+        for (AnswerCell answerCell : answerCells) {
+            if (!answerCell.isCorrectSymbol()) return true;
+        }
+        return false;
+    }
+
+    private void playWrongAnimationAnswer() {
+        for (AnswerCell animationCell : answerCells) {
+            animationWrong(animationCell);
+        }
     }
 
     private void useHint1() {
         if (useSecondHint) setDefaultImageSecondHint();
-        if (mPoints.checkFirstHint()) {
-            mSoundRep.playSound(mSoundRep.getHintSound());
-            for (AnswerCell answerCell : mAnswerCells) {
+        if (points.checkFirstHint()) {
+            soundRep.playSound(soundRep.getHintSound());
+            for (AnswerCell answerCell : answerCells) {
                 answerCell.clearAnswerCell();
             }
-            for (GameCell gameCell : mGameCells) {
+            for (GameCell gameCell : gameCells) {
                 if (!gameCell.isRightSymbol()) gameCell.hideCell();
             }
-            mPoints.useFirstHint();
-            mHintTitle.setText(getString(R.string.hints_title, mPoints.getCurrentPoints()));
-            blockFirstHint();
+            points.useFirstHint();
+            hintTitle.setText(getString(R.string.hints_title, points.getCurrentPoints()));
+            hideFirstHintButton();
         } else {
-            animationWrong(mHintTitle);
+            animationWrong(hintTitle);
         }
+    }
+
+    private void hideFirstHintButton() {
+        buttonHint1.setVisibility(View.INVISIBLE);
     }
 
     private void useHint2() {
-        if (mPoints.checkSecondHint()) {
+        if (points.checkSecondHint()) {
             useSecondHint = !useSecondHint;
-            if (useSecondHint) mButtonHint2.setBackgroundResource(R.drawable.hint_button_active);
-            else mButtonHint2.setBackgroundResource(R.drawable.hint_button);
+            if (useSecondHint) buttonHint2.setBackgroundResource(R.drawable.hint_button_active);
+            else buttonHint2.setBackgroundResource(R.drawable.hint_button);
         } else {
-            animationWrong(mHintTitle);
+            animationWrong(hintTitle);
         }
     }
 
-    private void useBonus() {
-        mSoundRep.playSound(mSoundRep.getPoints());
-        mHintTitle.setText(getString(R.string.hints_title, mPoints.getCurrentPoints()));
-        bonusUsed = false;
-    }
-
-    private void blockFirstHint() {
-        mButtonHint1.setVisibility(View.INVISIBLE);
+    private void bonusUsed() {
+        points.useBonusHint();
+        soundRep.playSound(soundRep.getPoints());
+        hintTitle.setText(getString(R.string.hints_title, points.getCurrentPoints()));
     }
 
     private void animationShowNextButton() {
-        mNextButton.setVisibility(View.VISIBLE);
-        mSoundRep.playSound(mSoundRep.getSwishUp());
-        float butStart = mNextButton.getTop() - mNextButton.getHeight();
-        float butEnd = mNextButton.getTop();
+        nextButton.setVisibility(View.VISIBLE);
+        soundRep.playSound(soundRep.getSwishUp());
+        float butStart = nextButton.getTop() - nextButton.getHeight();
+        float butEnd = nextButton.getTop();
 
-        ObjectAnimator buttonAnimator = ObjectAnimator.ofFloat(mNextButton, "y", butStart, butEnd)
+        ObjectAnimator buttonAnimator = ObjectAnimator.ofFloat(nextButton, "y", butStart, butEnd)
                 .setDuration(200);
         buttonAnimator.start();
-        mNextButton.setClickable(true);
+        nextButton.setClickable(true);
     }
 
     private void animationHideNextButton() {
         updateContent();
-        mSoundRep.playSound(mSoundRep.getSwishDown());
-        mNextButton.setClickable(false);
-        float butStart = mNextButton.getTop();
-        float butEnd = mNextButton.getBottom();
+        soundRep.playSound(soundRep.getSwishDown());
+        nextButton.setClickable(false);
+        float butStart = nextButton.getTop();
+        float butEnd = nextButton.getBottom();
 
-        ObjectAnimator buttonAnimator = ObjectAnimator.ofFloat(mNextButton, "y", butStart, butEnd)
+        ObjectAnimator buttonAnimator = ObjectAnimator.ofFloat(nextButton, "y", butStart, butEnd)
                 .setDuration(200);
         buttonAnimator.start();
     }
 
     private void animationWrong(TextView textView) {
-        mSoundRep.playSound(mSoundRep.getErrorSound());
+        soundRep.playSound(soundRep.getErrorSound());
         ObjectAnimator wrongAnimator = ObjectAnimator
                 .ofInt(textView, "textColor", textView.getCurrentTextColor(), ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.wrongAnswer))
                 .setDuration(200);
@@ -461,32 +485,30 @@ public class QuestionFragment extends BaseFragment {
         animatorSet.start();
     }
 
-    private void hidePickedCell(char correctSymbol) {
-        boolean temp = true;
-        for (GameCell gameCell : mGameCells) {
-            if (gameCell.getGameSymbol() == correctSymbol && !gameCell.isClicked() && gameCell.isRightSymbol()) {
+    private void hidePromptedGameCell(String correctSymbol) {
+        for (GameCell gameCell : gameCells) {
+            if (gameCell.getText().equals(correctSymbol) && gameCell.isRightSymbol() && gameCell.isVisible()) {
                 gameCell.hideCell();
-                gameCell.setClicked(true);
-                temp = false;
-                break;
+                return;
             }
         }
-        if (temp) {
-            for (AnswerCell answerCell : mAnswerCells) {
-                if (answerCell.getGameCell() != null && answerCell.getAnswerSymbol() == correctSymbol && answerCell.getGameCell().isRightSymbol()) {
-                    GameCell gameCell = answerCell.getGameCell();
-                    answerCell.clearAnswerCell();
-                    gameCell.hideCell();
-                    gameCell.setClicked(true);
-                    break;
-                }
+        hidePromptedAnswerCell(correctSymbol);
+    }
+
+    private void hidePromptedAnswerCell(String correctSymbol) {
+        for (AnswerCell answerCell : answerCells) {
+            GameCell gameCell = gameCells.get(answerCell.getGameCellPickedId());
+            if (answerCell.getText().equals(correctSymbol) && gameCell.isRightSymbol() && !answerCell.isPrompted()) {
+                answerCell.clearAnswerCell();
+                gameCell.hideCell();
+                return;
             }
         }
     }
 
     private void setDefaultImageSecondHint() {
         useSecondHint = false;
-        mButtonHint2.setBackgroundResource(R.drawable.hint_button);
+        buttonHint2.setBackgroundResource(R.drawable.hint_button);
     }
 
     private void initNumb() {
@@ -495,35 +517,22 @@ public class QuestionFragment extends BaseFragment {
         }
     }
 
-    private void setInterstitialAd() {
-        mInterstitialAd = new InterstitialAd(Objects.requireNonNull(getActivity()));
-        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_id));
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mInterstitialAd.loadAd(adRequest);
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
-            }
-        });
-    }
-
-    private void showInterstitialAd() {
+    private void checkForShowInterstitialAd() {
         int mAdCounter = sharedPrefHelper.getAdCounter();
         if (mAdCounter >= 6) {
-            if (mInterstitialAd.isLoaded()) mInterstitialAd.show();
+            adHelper.showInterstitialAd();
             sharedPrefHelper.setAdCounter(0);
         } else {
             sharedPrefHelper.setAdCounter(mAdCounter + 1);
         }
     }
 
-    private void initRewardedVideo() {
+    private void initAdMob() {
         RewardedVideoAdListener rewardedVideoAdListener = new RewardedVideoAdListener() {
             @Override
             public void onRewardedVideoAdLoaded() {
-                mButtonBonus.setEnabled(true);
-                mButtonBonus.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.enable_bonus_button));
+                buttonBonus.setEnabled(true);
+                buttonBonus.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.enable_bonus_button));
             }
 
             @Override
@@ -538,16 +547,14 @@ public class QuestionFragment extends BaseFragment {
 
             @Override
             public void onRewardedVideoAdClosed() {
-                mButtonBonus.setEnabled(false);
-                mButtonBonus.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.disabled_bonus_button));
-                loadRewardVideo();
-                if (bonusUsed) useBonus();
+                buttonBonus.setEnabled(false);
+                buttonBonus.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.disabled_bonus_button));
+                adHelper.loadRewardVideo();
             }
 
             @Override
             public void onRewarded(RewardItem rewardItem) {
-                mPoints.useBonusHint();
-                bonusUsed = true;
+                bonusUsed();
             }
 
             @Override
@@ -565,29 +572,13 @@ public class QuestionFragment extends BaseFragment {
 
             }
         };
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(getActivity());
-        mRewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
-        loadRewardVideo();
-    }
-
-    private void loadRewardVideo() {
-        mRewardedVideoAd.loadAd(getString(R.string.rewarded_video_id), new AdRequest.Builder().build());
+        adHelper = new AdHelper(getActivity(), rewardedVideoAdListener);
+        adHelper.loadRewardVideo();
     }
 
     private void showDialogForBonus() {
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
-        alertDialog.setTitle(getString(R.string.dialog_title));
-        alertDialog.setMessage(getString(R.string.dialog_bonus_message));
-        alertDialog.setCancelable(true);
-        alertDialog.setPositiveButton(getString(R.string.positive_button), (dialogInterface, i) -> {
-            if (mRewardedVideoAd.isLoaded()) {
-                mRewardedVideoAd.show();
-            }
-        });
-        alertDialog.setNegativeButton(getString(R.string.negative_button), (dialogInterface, i) -> {
-
-        });
-        alertDialog.show();
+        new BonusDialogFragment(() -> adHelper.showRewardVideo())
+                .show(Objects.requireNonNull(getFragmentManager()), null);
     }
 
     private void incrementId() {
@@ -595,7 +586,7 @@ public class QuestionFragment extends BaseFragment {
             mQId++;
         } else {
             mQId = 0;
-            mNextButton.setText(getString(R.string.end_game_text, categoryTitle));
+            nextButton.setText(getString(R.string.end_game_text, categoryTitle));
             sharedPrefHelper.setCategoryComplete(categoryTitle);
         }
     }

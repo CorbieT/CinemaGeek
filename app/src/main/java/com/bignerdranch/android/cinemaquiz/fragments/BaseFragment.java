@@ -25,8 +25,8 @@ public abstract class BaseFragment extends Fragment {
         fragmentHandler.createFragment(fragment);
     }
 
-    protected void createFragmentWithBackStack(Fragment fragment, String tag) {
-        fragmentHandler.createFragmentWithBackStack(fragment, tag);
+    protected void createFragmentWithBackStack(Fragment fragment) {
+        fragmentHandler.createFragmentWithBackStack(fragment, null);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.bignerdranch.android.cinemaquiz.model;
+package com.bignerdranch.android.cinemaquiz.repositories;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -19,15 +19,15 @@ public class SoundRep {
 
     private static final int MAX_SOUNDS = 5;
 
-    private AssetManager mAssetManager;
-    private SoundPool mSoundPool;
+    private AssetManager assetManager;
+    private SoundPool soundPool;
 
-    private int mHintSound;
-    private int mButtonClickSound;
-    private int mErrorSound;
-    private int mPoints;
-    private int mSwishUp;
-    private int mSwishDown;
+    private int hintSound;
+    private int buttonClickSound;
+    private int errorSound;
+    private int points;
+    private int swishUp;
+    private int swishDown;
 
     private boolean isSound;
 
@@ -41,14 +41,14 @@ public class SoundRep {
 
     private void loadSoundPool() {
         createSoundPool();
-        mAssetManager = mContext.getAssets();
+        assetManager = mContext.getAssets();
 
-        mHintSound = loadSound("hint1.mp3");
-        mButtonClickSound = loadSound("button.mp3");
-        mErrorSound = loadSound("wrong.mp3");
-        mPoints = loadSound("coins.mp3");
-        mSwishUp = loadSound("swishup.mp3");
-        mSwishDown = loadSound("swishdown.mp3");
+        hintSound = loadSound("hint1.mp3");
+        buttonClickSound = loadSound("button.mp3");
+        errorSound = loadSound("wrong.mp3");
+        points = loadSound("coins.mp3");
+        swishUp = loadSound("swishup.mp3");
+        swishDown = loadSound("swishdown.mp3");
     }
 
     private void createSoundPool() {
@@ -64,60 +64,60 @@ public class SoundRep {
         AudioAttributes attributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build();
-        mSoundPool = new SoundPool.Builder()
+        soundPool = new SoundPool.Builder()
                 .setAudioAttributes(attributes)
                 .build();
     }
 
     private void createOldSoundPool() {
-        mSoundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
+        soundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
     }
 
     private int loadSound(String fileName) {
         AssetFileDescriptor afd;
         try {
-            afd = mAssetManager.openFd(fileName);
+            afd = assetManager.openFd(fileName);
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(mContext.getApplicationContext(), mContext.getString(R.string.error_load_sound_file_message) + fileName, Toast.LENGTH_SHORT).show();
             return -1;
         }
-        return mSoundPool.load(afd, 1);
+        return soundPool.load(afd, 1);
     }
 
     public void playSound(int sound) {
         if (isSound && sound > 0) {
-            mSoundPool.play(sound, 1, 1, 1, 0, 1);
+            soundPool.play(sound, 1, 1, 1, 0, 1);
         }
     }
 
     //Crash with call
     public void releaseSoundPool() {
-        mSoundPool.release();
-        mSoundPool = null;
+        soundPool.release();
+        soundPool = null;
     }
 
     public int getHintSound() {
-        return mHintSound;
+        return hintSound;
     }
 
     public int getButtonClickSound() {
-        return mButtonClickSound;
+        return buttonClickSound;
     }
 
     public int getErrorSound() {
-        return mErrorSound;
+        return errorSound;
     }
 
     public int getPoints() {
-        return mPoints;
+        return points;
     }
 
     public int getSwishUp() {
-        return mSwishUp;
+        return swishUp;
     }
 
     public int getSwishDown() {
-        return mSwishDown;
+        return swishDown;
     }
 }
