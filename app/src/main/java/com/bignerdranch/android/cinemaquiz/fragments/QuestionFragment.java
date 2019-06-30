@@ -272,7 +272,7 @@ public class QuestionFragment extends BaseFragment {
                     if (i == 0) { linearLayout.addView(createDashView(), cellLayoutParams); }
                     splittedWord = answerWord.substring(9);
                 }
-                break;
+                continue;
             }
             LinearLayout linearLayout = new LinearLayout(getActivity());
             answerContainer.addView(linearLayout, linearLayoutParams);
