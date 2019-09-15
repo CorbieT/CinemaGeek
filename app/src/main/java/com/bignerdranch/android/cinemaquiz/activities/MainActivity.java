@@ -10,21 +10,13 @@ import androidx.fragment.app.FragmentTransaction;
 import com.bignerdranch.android.cinemaquiz.R;
 import com.bignerdranch.android.cinemaquiz.fragments.MainFragment;
 import com.bignerdranch.android.cinemaquiz.interfaces.FragmentHandler;
-import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.ads.MobileAds;
-
-import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity implements FragmentHandler {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_fragment);
-
-        MobileAds.initialize(this, getString(R.string.Ad_app_id));
-
         createFragment(MainFragment.newInstance());
     }
 
