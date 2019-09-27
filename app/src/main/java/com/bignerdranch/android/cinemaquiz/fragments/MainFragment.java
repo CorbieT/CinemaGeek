@@ -61,7 +61,7 @@ public class MainFragment extends BaseFragment {
         return view;
     }
 
-    @OnClick({R.id.start_button, R.id.about_button, R.id.sound_container})
+    @OnClick({R.id.start_button, R.id.about_button, R.id.sound_container, R.id.sound_button})
     public void setViewsOnClickListeners(View view) {
         switch (view.getId()) {
             case R.id.start_button:
@@ -70,6 +70,7 @@ public class MainFragment extends BaseFragment {
             case R.id.about_button:
                 createFragmentWithBackStack(AboutFragment.newInstance());
                 break;
+            case R.id.sound_button:
             case R.id.sound_container:
                 isSound = !isSound;
                 updateSoundImage(isSound);

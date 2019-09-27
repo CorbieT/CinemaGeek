@@ -146,7 +146,7 @@ public class QuestionFragment extends BaseFragment {
     }
 
     private void initViewComponents() {
-        initAdMob();
+//        initAdMob();
         soundRep = new SoundRep(getActivity());
         createGameField();
         initNumb();
