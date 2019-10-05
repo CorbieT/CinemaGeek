@@ -44,5 +44,5 @@
     \nЯ желаю тебе приятной игры)
     \nДа пребудет с тобой Сила)</string>
     <!--other-->
-    <string name="send_email">Написать разработчику</string>
+    <string name="send_to_developer">Написать разработчику</string>
 </resources>

@@ -17,11 +17,27 @@ import com.bignerdranch.android.cinemaquiz.fragments.dialogs.RateDialogFragment;
 
 import java.util.Objects;
 
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class AboutFragment extends BaseFragment {
+
+    @BindString(R.string.email_link)
+    String emailLink;
+
+    @BindString(R.string.send_to_developer)
+    String sendToDeveloper;
+
+    @BindString(R.string.market_url)
+    String marketUrl;
+
+    @BindString(R.string.market_browser_url)
+    String marketBrowserUrl;
+
+    @BindString(R.string.error_open_market_message)
+    String errorMarketMessage;
 
     private Unbinder unbinder;
 
@@ -58,9 +74,9 @@ public class AboutFragment extends BaseFragment {
 
     private void sendEmail() {
         Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                "mailto",getString(R.string.email_link), null));
-        intent.putExtra(Intent.EXTRA_EMAIL, getString(R.string.email_link));
-        startActivity(Intent.createChooser(intent, getString(R.string.send_email)));
+                "mailto", emailLink, null));
+        intent.putExtra(Intent.EXTRA_EMAIL, emailLink);
+        startActivity(Intent.createChooser(intent, sendToDeveloper));
 
     }
 
@@ -71,11 +87,11 @@ public class AboutFragment extends BaseFragment {
 
     private void redirectToMarket() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(getString(R.string.market_url)));
+        intent.setData(Uri.parse(marketUrl));
         if (isActivityStarted(intent)) {
-            intent.setData(Uri.parse(getString(R.string.market_browser_url)));
+            intent.setData(Uri.parse(marketBrowserUrl));
         } else {
-            Toast.makeText(getActivity(), getString(R.string.error_open_market_message), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), errorMarketMessage, Toast.LENGTH_SHORT).show();
         }
     }
 
