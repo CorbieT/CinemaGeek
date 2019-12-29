@@ -1,15 +1,14 @@
-package com.bignerdranch.android.cinemaquiz.activities;
+package com.bignerdranch.android.cinemaquiz.ui.activities;
 
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bignerdranch.android.cinemaquiz.R;
-import com.bignerdranch.android.cinemaquiz.fragments.MainFragment;
 import com.bignerdranch.android.cinemaquiz.interfaces.FragmentHandler;
+import com.bignerdranch.android.cinemaquiz.ui.fragments.main.MainFragment;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.MobileAds;
 
@@ -37,9 +36,11 @@ public class MainActivity extends AppCompatActivity implements FragmentHandler {
 
     @Override
     public void createFragmentWithBackStack(Fragment fragment, String tag) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction().addToBackStack(null);
-        fragmentTransaction.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter_back, R.anim.exit_back);
-        fragmentTransaction.replace(R.id.fragmentContainer, fragment, tag).commit();
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter_back, R.anim.exit_back)
+                .replace(R.id.fragmentContainer, fragment)
+                .addToBackStack(tag)
+                .commit();
     }
 
 }

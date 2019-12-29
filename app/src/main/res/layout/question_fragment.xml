@@ -156,4 +156,13 @@
         android:text="@string/next_text"
         android:visibility="invisible" />
 
+    <ProgressBar
+        android:id="@+id/progress_bar_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateDrawable="@drawable/progress_bar"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
 </RelativeLayout>

@@ -8,14 +8,14 @@ public class Points {
     private static final int PRICE_FIRST_HINT = 10;
     private static final int POINTS_FOR_BONUS = 10;
     private static final int PRICE_SECOND_HINT = 1;
-    private static final int POINTS_START_GAME = 13;
+    private static final int POINTS_START_GAME = 2000;
     private final SharedPrefHelper sharedPrefHelper;
 
     public Points(SharedPrefHelper sharedPrefHelper) {
         this.sharedPrefHelper = sharedPrefHelper;
     }
 
-    public boolean checkFirstHint() {
+    public boolean isFirstHintAvailable() {
         return getCurrentPoints() >= PRICE_FIRST_HINT;
     }
 

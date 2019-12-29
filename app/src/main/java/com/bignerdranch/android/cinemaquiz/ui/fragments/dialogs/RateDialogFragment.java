@@ -1,4 +1,4 @@
-package com.bignerdranch.android.cinemaquiz.fragments.dialogs;
+package com.bignerdranch.android.cinemaquiz.ui.fragments.dialogs;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -13,11 +13,11 @@ import com.bignerdranch.android.cinemaquiz.interfaces.Function;
 
 import java.util.Objects;
 
-public class BonusDialogFragment extends DialogFragment {
+public class RateDialogFragment extends DialogFragment {
 
     private Function positiveClick;
 
-    public BonusDialogFragment(Function positiveClick) {
+    public RateDialogFragment(Function positiveClick) {
         this.positiveClick = positiveClick;
     }
 
@@ -26,7 +26,7 @@ public class BonusDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         return new AlertDialog.Builder(Objects.requireNonNull(getActivity()))
                 .setTitle(getString(R.string.dialog_title))
-                .setMessage(getString(R.string.dialog_bonus_message))
+                .setMessage(getString(R.string.dialog_rate_message))
                 .setPositiveButton(getString(R.string.positive_button), (dialog, which) -> positiveClick.execute())
                 .setNegativeButton(getString(R.string.negative_button), null)
                 .create();

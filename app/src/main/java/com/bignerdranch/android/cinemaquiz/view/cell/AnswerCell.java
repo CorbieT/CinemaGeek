@@ -1,15 +1,14 @@
-package com.bignerdranch.android.cinemaquiz.model;
+package com.bignerdranch.android.cinemaquiz.view.cell;
 
 import android.content.Context;
 import android.util.TypedValue;
 import android.view.Gravity;
 
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 
 import com.bignerdranch.android.cinemaquiz.R;
 
-public class AnswerCell extends AppCompatTextView {
+public class AnswerCell extends Cell {
 
     private String correctSymbol;
     private int gameCellPickedId;
@@ -17,26 +16,15 @@ public class AnswerCell extends AppCompatTextView {
 
     public AnswerCell(Context context) {
         super(context);
-    }
-
-    public AnswerCell(Context context, String correctSymbol) {
-        super(context);
-        this.correctSymbol = correctSymbol;
         this.setMinEms(1);
         this.setGravity(Gravity.CENTER_HORIZONTAL);
         this.setTextColor(ContextCompat.getColor(getContext(), R.color.textColor));
         this.setBackgroundResource(R.drawable.bottom_stroke);
         this.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
-        this.setText("");
-    }
-
-    @Override
-    public String getText() {
-        return super.getText().toString();
     }
 
     public boolean isEmpty() {
-        return this.getText().isEmpty();
+        return this.getSymbol().isEmpty();
     }
 
     public String getCorrectSymbol() {
@@ -44,19 +32,23 @@ public class AnswerCell extends AppCompatTextView {
     }
 
     public void showCorrectSymbol() {
-        this.setText(correctSymbol);
+        this.setSymbol(correctSymbol);
         this.setTextColor(ContextCompat.getColor(getContext(), R.color.correct_color));
         this.setBackgroundResource(R.drawable.bottom_stroke_green);
         this.isPrompted = true;
     }
 
-    public boolean isCorrectSymbol() {
-        if (isEmpty()) return false;
-        return this.getText().equals(correctSymbol);
+    public void setCorrectSymbol(String correctSymbol) {
+        this.correctSymbol = correctSymbol;
     }
 
-    public void clearAnswerCell() {
-        this.setText("");
+    public boolean isCorrectSymbol() {
+        if (isEmpty()) return false;
+        return this.getSymbol().equals(correctSymbol);
+    }
+
+    public void clear() {
+        this.setSymbol("");
     }
 
     public int getGameCellPickedId() {
@@ -67,7 +59,7 @@ public class AnswerCell extends AppCompatTextView {
         this.gameCellPickedId = gameCellPickedId;
     }
 
-    public boolean isPrompted() {
-        return isPrompted;
+    public boolean isNotPrompted() {
+        return !isPrompted;
     }
 }

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/main_menu_v1"
-    tools:context="com.bignerdranch.android.cinemaquiz.activities.MainActivity">
+    tools:context=".ui.activities.MainActivity">
 
     <TextView
         android:id="@+id/main_title"
@@ -58,7 +58,7 @@
                 android:fontFamily="@font/trixie"
                 android:text="@string/sound_btn_text"
                 android:textColor="#ffffff"
-                android:textSize="42sp"/>
+                android:textSize="42sp" />
 
             <ImageButton
                 android:id="@+id/sound_button"

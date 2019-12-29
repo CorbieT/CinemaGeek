@@ -1,15 +1,14 @@
-package com.bignerdranch.android.cinemaquiz.model;
+package com.bignerdranch.android.cinemaquiz.view.cell;
 
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
 
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 
 import com.bignerdranch.android.cinemaquiz.R;
 
-public class GameCell extends AppCompatTextView {
+public class GameCell extends Cell {
 
     private boolean isRightSymbol = false;
 
@@ -36,11 +35,6 @@ public class GameCell extends AppCompatTextView {
 
     public boolean isVisible() {
         return this.getVisibility() == View.VISIBLE;
-    }
-
-    @Override
-    public String getText() {
-        return super.getText().toString();
     }
 
     public void hideCell() {

@@ -45,4 +45,5 @@
     \nДа пребудет с тобой Сила)</string>
     <!--other-->
     <string name="send_email">Написать разработчику</string>
+    <string name="error_msg">Ошибка при загрузке %1$s. Сообщите об ошибке нам на почту</string>
 </resources>
