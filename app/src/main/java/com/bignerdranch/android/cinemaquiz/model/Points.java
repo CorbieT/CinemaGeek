@@ -4,11 +4,11 @@ import com.bignerdranch.android.cinemaquiz.common.SharedPrefHelper;
 
 public class Points {
 
-    private static final int POINTS_FOR_WIN = 2;
+    private static final int POINTS_FOR_WIN = 1;
     private static final int PRICE_FIRST_HINT = 10;
     private static final int POINTS_FOR_BONUS = 10;
     private static final int PRICE_SECOND_HINT = 1;
-    private static final int POINTS_START_GAME = 2000;
+    private static final int POINTS_START_GAME = 13;
     private final SharedPrefHelper sharedPrefHelper;
 
     public Points(SharedPrefHelper sharedPrefHelper) {
