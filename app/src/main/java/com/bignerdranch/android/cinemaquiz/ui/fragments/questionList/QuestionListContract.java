@@ -1,16 +1,17 @@
-package com.bignerdranch.android.cinemaquiz.ui.fragments.categories;
+package com.bignerdranch.android.cinemaquiz.ui.fragments.questionList;
 
 import com.bignerdranch.android.cinemaquiz.ui.fragments.BaseViewLoaderContract;
 
 import java.util.List;
 
-public interface CategoriesContract {
+interface QuestionListContract {
     interface View<T> extends BaseViewLoaderContract {
         void setupRecycler(List<T> newItems);
-        void showErrorLoadingCategories(String msg);
+        void showErrorLoadingQuestions(String msg);
     }
 
     interface Presenter {
-        void loadCategories();
+        void loadQuestions();
+        int getLastQuestionId();
     }
 }

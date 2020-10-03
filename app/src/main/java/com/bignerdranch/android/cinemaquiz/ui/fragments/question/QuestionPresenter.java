@@ -9,7 +9,6 @@ import com.bignerdranch.android.cinemaquiz.common.SharedPrefHelper;
 import com.bignerdranch.android.cinemaquiz.model.Points;
 import com.bignerdranch.android.cinemaquiz.model.Question;
 import com.bignerdranch.android.cinemaquiz.repositories.SoundRep;
-import com.bignerdranch.android.cinemaquiz.repositories.questions.QuestionRepository;
 import com.bignerdranch.android.cinemaquiz.utils.Utils;
 import com.bignerdranch.android.cinemaquiz.view.cell.AnswerCell;
 import com.bignerdranch.android.cinemaquiz.view.cell.GameCell;
@@ -18,9 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.bignerdranch.android.cinemaquiz.common.Constants.ALPHABET;
 import static com.bignerdranch.android.cinemaquiz.common.Constants.ALPHABET_SIZE;
@@ -35,7 +31,7 @@ import static com.bignerdranch.android.cinemaquiz.common.Constants.MAX_CELLS_COU
 public class QuestionPresenter extends BasePresenter implements QuestionContract.Presenter {
 
     private QuestionContract.View view;
-    private QuestionRepository<Question> repository;
+    private Question currentQuestion;
     private String categoryTitle;
     private Points points;
     private SoundRep soundRep;
@@ -47,13 +43,13 @@ public class QuestionPresenter extends BasePresenter implements QuestionContract
     private final List<Integer> NUMBERS = new ArrayList<>(MAX_CELLS_COUNT);
 
     private int questionId;
-    private List<Question> questions;
+    private int lastAnsweredQuestionId;
 
     public QuestionPresenter(QuestionContract.View view,
                              String categoryTitle,
                              SharedPrefHelper sharedPrefHelper,
                              SoundRep soundRep,
-                             QuestionRepository<Question> repository,
+                             Question question,
                              Lifecycle lifecycle) {
         initNumb();
         lifecycle.addObserver(this);
@@ -62,10 +58,10 @@ public class QuestionPresenter extends BasePresenter implements QuestionContract
         this.soundRep = soundRep;
         this.points = new Points(sharedPrefHelper);
         this.sharedPrefHelper = sharedPrefHelper;
-        this.repository = repository;
-        questionId = sharedPrefHelper.getQuestionId(categoryTitle);
+        this.currentQuestion = question;
+        this.questionId = question.getId();
+        this.lastAnsweredQuestionId = sharedPrefHelper.getQuestionId(categoryTitle);
         updateNextButtonBackground(categoryTitle);
-        loadQuestions();
     }
 
     private void initNumb() {
@@ -74,36 +70,42 @@ public class QuestionPresenter extends BasePresenter implements QuestionContract
         }
     }
 
-    private void loadQuestions() {
-        disposables.add(repository.parseQuestions()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(d -> view.showLoader())
-                .doFinally(() -> view.hideLoader())
-                .subscribe(response -> {
-                            questions = response;
-                            updateContent();
-                        },
-                        error -> view.showErrorLoadingQuestions("вопросов")));
+    @Override
+    public void initContent() {
+        view.updateHintTitle(points.getCurrentPoints());
+        view.updateQuestionTitle(questionId);
+        view.updateQuestionText(currentQuestion.getQuestionText());
+        view.createAnswerField(currentQuestion.getAnswer());
+        view.createGameField();
+        initGameCellsWithAnswer(Utils.removeSpaces(currentQuestion.getAnswer()));
+        if (questionId == lastAnsweredQuestionId) {
+            view.showCurrentQuestionConfiguration();
+        } else if (questionId < lastAnsweredQuestionId) {
+            showAnswer();
+            view.showPassedQuestionConfiguration();
+        } else {
+            view.showNotPassedQuestionConfiguration();
+        }
+        updateNextButtonBackground(categoryTitle);
     }
 
     @Override
     public void updateContent() {
-        answerCells.clear();
         view.updateHintTitle(points.getCurrentPoints());
-        view.updateQuestionTitle(questionId);
-        view.updateQuestionText(questions.get(questionId).getQuestionText());
-        view.createAnswerField(questions.get(questionId).getAnswer());
-        showAllGameCells();
-        initGameCellsWithAnswer(Utils.removeSpaces(questions.get(questionId).getAnswer()));
-        view.scrollQuestionTextToUp();
-        view.showHintButtons();
-        updateNextButtonBackground(categoryTitle);
+        lastAnsweredQuestionId = sharedPrefHelper.getQuestionId(categoryTitle);
+        if (questionId == lastAnsweredQuestionId) {
+            view.showCurrentQuestionConfiguration();
+        } else if (questionId < lastAnsweredQuestionId) {
+            showAnswer();
+            view.showPassedQuestionConfiguration();
+        } else {
+            view.showNotPassedQuestionConfiguration();
+        }
     }
 
-    private void showAllGameCells() {
-        for (GameCell gameCell : gameCells) {
-            gameCell.showCell();
+    private void showAnswer() {
+        for (AnswerCell answerCell : answerCells) {
+            answerCell.showCorrectSymbol(false);
         }
     }
 
@@ -165,7 +167,7 @@ public class QuestionPresenter extends BasePresenter implements QuestionContract
                 soundRep.playSound(soundRep.getButtonClickSound());
                 points.useSecondHint();
                 view.updateHintTitle(points.getCurrentPoints());
-                cell.showCorrectSymbol();
+                cell.showCorrectSymbol(true);
                 hidePromptedGameCell(cell.getCorrectSymbol());
                 checkForWin();
             }
@@ -216,10 +218,11 @@ public class QuestionPresenter extends BasePresenter implements QuestionContract
 
     @Override
     public void clickOnNextButton() {
-        updateContent();
         soundRep.playSound(soundRep.getSwishDown());
-        view.disableNextButton();
-        view.animationHideNextButton();
+        if (questionId == 49) view.closeQuestionFragment();
+        else view.animationHideNextButton();
+        view.hideNextButton();
+        updateContent();
     }
 
     private void initGameCellsWithAnswer(@NonNull String answer) {
@@ -257,7 +260,7 @@ public class QuestionPresenter extends BasePresenter implements QuestionContract
         checkForPuzzleNextButton(categoryTitle, questionId);
         incrementId();
         checkForShowInterstitialAd();
-        sharedPrefHelper.setQuestionId(categoryTitle, questionId);
+        sharedPrefHelper.setQuestionId(categoryTitle, questionId + 1);
         soundRep.playSound(soundRep.getSwishUp());
         view.animationShowNextButton();
         points.increasePoints();
@@ -278,10 +281,7 @@ public class QuestionPresenter extends BasePresenter implements QuestionContract
     }
 
     private void incrementId() {
-        if (questionId != 49) {
-            questionId++;
-        } else {
-            questionId = 0;
+        if (questionId == 49) {
             view.setNextButtonCategoryCompleteText(categoryTitle);
             sharedPrefHelper.setCategoryComplete(categoryTitle);
         }
@@ -342,5 +342,10 @@ public class QuestionPresenter extends BasePresenter implements QuestionContract
                 if (questionId == 9)
                     view.setNextButtonBackground(R.drawable.smiley_missme_bg);
         }
+    }
+
+    @Override
+    public int getQuestionId() {
+        return questionId;
     }
 }

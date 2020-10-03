@@ -1,7 +1,5 @@
 package com.bignerdranch.android.cinemaquiz.ui.fragments.categories;
 
-import android.annotation.SuppressLint;
-
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 
@@ -23,11 +21,10 @@ public class CategoriesPresenter extends BasePresenter implements CategoriesCont
         this.view = view;
         this.repository = repository;
         lifecycle.addObserver(this);
-        loadCategories();
     }
-
-    @SuppressLint("CheckResult")
-    private void loadCategories() {
+    
+    @Override
+    public void loadCategories() {
         disposables.add(repository.parseCategories()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -9,7 +9,8 @@ import java.util.List;
 
 import io.reactivex.Single;
 
-public class QuestionRepositoryImpl implements QuestionRepository<Question> {
+public class QuestionRepositoryImpl implements QuestionRepository {
+
     private XmlPullParserHelper xmlPullParserHelper;
     private String categoryTitle;
 

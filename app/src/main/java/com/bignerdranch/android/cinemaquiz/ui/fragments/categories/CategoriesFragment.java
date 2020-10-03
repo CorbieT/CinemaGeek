@@ -16,6 +16,7 @@ import com.bignerdranch.android.cinemaquiz.repositories.categories.CategoryRepos
 import com.bignerdranch.android.cinemaquiz.ui.fragments.BaseFragment;
 import com.bignerdranch.android.cinemaquiz.ui.fragments.categories.recycler.CategoryAdapter;
 import com.bignerdranch.android.cinemaquiz.ui.fragments.question.QuestionFragment;
+import com.bignerdranch.android.cinemaquiz.ui.fragments.questionList.QuestionListFragment;
 import com.bignerdranch.android.cinemaquiz.utils.Utils;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class CategoriesFragment extends BaseFragment implements CategoriesContra
     @BindView(R.id.fragment_categories_recycler_view)
     RecyclerView categoriesRecyclerView;
 
-    @BindView(R.id.progress_bar)
+    @BindView(R.id.categories_progress_bar)
     ProgressBar progressBar;
 
     private Unbinder unbinder;
@@ -54,16 +55,16 @@ public class CategoriesFragment extends BaseFragment implements CategoriesContra
                     new CategoryRepositoryImpl(Utils.getXmlParser(getContext(), R.xml.text),
                             new SharedPrefHelper(getContext())),
                     getLifecycle());
+            presenter.loadCategories();
         }
     }
 
     @Override
     public void setupRecycler(List<Category> newItems) {
-        categoriesRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(categoriesRecyclerView.getContext(),
-                R.anim.layout_animation_right));
-        categoriesRecyclerView.setAdapter(new CategoryAdapter(getActivity(),
-                newItems,
-                s -> createFragmentWithBackStack(QuestionFragment.newInstance(s))));
+//        categoriesRecyclerView.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(categoriesRecyclerView.getContext(),
+//                R.anim.layout_animation_right));
+        categoriesRecyclerView.setAdapter(new CategoryAdapter(newItems,
+                s -> createFragmentWithBackStack(QuestionListFragment.newInstance(s))));
     }
 
     @Override

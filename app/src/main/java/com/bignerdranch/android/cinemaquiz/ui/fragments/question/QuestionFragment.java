@@ -20,10 +20,11 @@ import com.bignerdranch.android.cinemaquiz.R;
 import com.bignerdranch.android.cinemaquiz.common.AdHelper;
 import com.bignerdranch.android.cinemaquiz.common.SharedPrefHelper;
 import com.bignerdranch.android.cinemaquiz.common.factory.CellFactory;
+import com.bignerdranch.android.cinemaquiz.model.Question;
 import com.bignerdranch.android.cinemaquiz.repositories.SoundRep;
-import com.bignerdranch.android.cinemaquiz.repositories.questions.QuestionRepositoryImpl;
 import com.bignerdranch.android.cinemaquiz.ui.fragments.BaseFragment;
 import com.bignerdranch.android.cinemaquiz.ui.fragments.dialogs.BonusDialogFragment;
+import com.bignerdranch.android.cinemaquiz.ui.fragments.question.viewPager.QuestionPagerFragment;
 import com.bignerdranch.android.cinemaquiz.utils.Utils;
 import com.bignerdranch.android.cinemaquiz.view.cell.AnswerCell;
 import com.bignerdranch.android.cinemaquiz.view.cell.CellType;
@@ -39,7 +40,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.bignerdranch.android.cinemaquiz.common.Constants.CATEGORY_TAG;
 import static com.bignerdranch.android.cinemaquiz.common.Constants.MATCH_PARENT;
+import static com.bignerdranch.android.cinemaquiz.common.Constants.QUESTION;
 import static com.bignerdranch.android.cinemaquiz.common.Constants.WRAP_CONTENT;
 
 public class QuestionFragment extends BaseFragment implements QuestionContract.View {
@@ -83,20 +86,23 @@ public class QuestionFragment extends BaseFragment implements QuestionContract.V
     @BindView(R.id.progress_bar_question)
     ProgressBar progressBar;
 
-    private Unbinder unbinder;
+    @BindView(R.id.large_question_number)
+    TextView questionNumber;
 
-    public static final String CATEGORY_TAG = "CATEGORY_TITLE";
+    private Unbinder unbinder;
 
     private String categoryTitle = "";
 
     private AdHelper adHelper;
     private CellFactory cellFactory;
+    private Question question;
 
     private QuestionContract.Presenter presenter;
 
-    public static QuestionFragment newInstance(String category) {
+    public static QuestionFragment newInstance(String category, Question question) {
         Bundle bundle = new Bundle();
         bundle.putString(CATEGORY_TAG, category);
+        bundle.putParcelable(QUESTION, question);
         QuestionFragment fragment = new QuestionFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -117,17 +123,25 @@ public class QuestionFragment extends BaseFragment implements QuestionContract.V
                 categoryTitle,
                 new SharedPrefHelper(Objects.requireNonNull(getActivity())),
                 new SoundRep(getActivity()),
-                new QuestionRepositoryImpl(Utils.getXmlParser(Objects.requireNonNull(getContext()), R.xml.text), categoryTitle),
+                question,
                 getLifecycle());
         setViewsOnClickListeners(view);
         initAdMob();
-        createGameField();
+        presenter.initContent();
+        questionNumber.setText(String.valueOf(presenter.getQuestionId() + 1));
     }
 
     private void loadBundle(Bundle bundle) {
         if (bundle != null) {
             categoryTitle = bundle.getString(CATEGORY_TAG);
+            question = bundle.getParcelable(QUESTION);
         }
+    }
+
+    @Override
+    public void onResume() {
+        presenter.updateContent();
+        super.onResume();
     }
 
     @Override
@@ -157,21 +171,35 @@ public class QuestionFragment extends BaseFragment implements QuestionContract.V
     }
 
     @Override
-    public void showLoader() {
-        titleContainer.setVisibility(View.GONE);
-        scrollView.setVisibility(View.GONE);
+    public void showPassedQuestionConfiguration() {
+        questionNumber.setVisibility(View.GONE);
+        hintTitle.setVisibility(View.GONE); //TODO выравнивание номера вопроса по центру
+        titleContainer.setVisibility(View.VISIBLE);
+        scrollView.setVisibility(View.VISIBLE);
+        answerContainer.setVisibility(View.VISIBLE);
         hintContainer.setVisibility(View.GONE);
-        gameCellContainer.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
+        gameCellContainer.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    public void hideLoader() {
-        progressBar.setVisibility(View.GONE);
+    public void showCurrentQuestionConfiguration() {
+        questionNumber.setVisibility(View.GONE);
         titleContainer.setVisibility(View.VISIBLE);
         scrollView.setVisibility(View.VISIBLE);
+        answerContainer.setVisibility(View.VISIBLE);
         hintContainer.setVisibility(View.VISIBLE);
         gameCellContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showNotPassedQuestionConfiguration() {
+        titleContainer.setVisibility(View.GONE);
+        scrollView.setVisibility(View.GONE);
+        answerContainer.setVisibility(View.GONE);
+        hintContainer.setVisibility(View.GONE);
+        answerContainer.setVisibility(View.GONE);
+        gameCellContainer.setVisibility(View.GONE);
+        questionNumber.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -218,7 +246,8 @@ public class QuestionFragment extends BaseFragment implements QuestionContract.V
         return answerCell;
     }
 
-    private void createGameField() {
+    @Override
+    public void createGameField() {
         LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT, 1.0f);
         linearLayoutParams.setMargins(0, 0, 0, 15);
         int cellAddedCounter = 0;
@@ -243,7 +272,8 @@ public class QuestionFragment extends BaseFragment implements QuestionContract.V
     }
 
     @Override
-    public void disableNextButton() {
+    public void hideNextButton() {
+        nextButton.setVisibility(View.GONE);
         nextButton.setClickable(false);
     }
 
@@ -325,20 +355,8 @@ public class QuestionFragment extends BaseFragment implements QuestionContract.V
     }
 
     @Override
-    public void scrollQuestionTextToUp() {
-        scrollView.scrollTo(0, 0);
-    }
-
-    /**VIEW VISIBILITY*/
-    @Override
     public void hideFirstHintButton() {
         buttonHint1.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void showHintButtons() {
-        buttonHint1.setVisibility(View.VISIBLE);
-        buttonHint2.setVisibility(View.VISIBLE);
     }
 
     /**UPDATE CONTENT*/
@@ -364,15 +382,20 @@ public class QuestionFragment extends BaseFragment implements QuestionContract.V
         questionText.setText(text);
     }
 
+    @Override
+    public void closeQuestionFragment() {
+        //TODO закрыть если был последний вопрос
+    }
+
     /**ANIMATION*/
 
     @Override
     public void animationShowNextButton() {
         nextButton.setVisibility(View.VISIBLE);
-        float butStart = nextButton.getTop() - nextButton.getHeight();
-        float butEnd = nextButton.getTop();
+        float butStart = nextButton.getRight() + nextButton.getWidth();
+        float butEnd = nextButton.getRight() - nextButton.getWidth();
 
-        ObjectAnimator buttonAnimator = ObjectAnimator.ofFloat(nextButton, "y", butStart, butEnd)
+        ObjectAnimator buttonAnimator = ObjectAnimator.ofFloat(nextButton, "x", butStart, butEnd)
                 .setDuration(200);
         buttonAnimator.start();
         nextButton.setClickable(true);
@@ -380,12 +403,9 @@ public class QuestionFragment extends BaseFragment implements QuestionContract.V
 
     @Override
     public void animationHideNextButton() {
-        float butStart = nextButton.getTop();
-        float butEnd = nextButton.getBottom();
-
-        ObjectAnimator buttonAnimator = ObjectAnimator.ofFloat(nextButton, "y", butStart, butEnd)
-                .setDuration(200);
-        buttonAnimator.start();
+        if (getParentFragment() != null)
+            ((QuestionPagerFragment) getParentFragment())
+                    .onNextQuestion(presenter.getQuestionId() + 1);
     }
 
     @Override
@@ -418,10 +438,5 @@ public class QuestionFragment extends BaseFragment implements QuestionContract.V
                 .play(wrongAnimator)
                 .before(normalAnimator);
         animatorSet.start();
-    }
-
-    @Override
-    public void showErrorLoadingQuestions(String msg) {
-        Utils.showToast(getContext(), getString(R.string.error_msg, msg));
     }
 }

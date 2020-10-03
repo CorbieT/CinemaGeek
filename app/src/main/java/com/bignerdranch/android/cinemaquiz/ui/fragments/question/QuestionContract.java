@@ -15,19 +15,19 @@ public interface QuestionContract {
         void updateSecondHintBackground(boolean criteriaUpdate);
         void animationShowNextButton();
         void animationHideNextButton();
-        void disableNextButton();
+        void hideNextButton();
         void showDialogForBonus();
         void createAnswerField(String answer);
+        void createGameField();
         void updateQuestionTitle(int questionId);
         void updateQuestionText(String text);
-        void showHintButtons();
-        void scrollQuestionTextToUp();
         void playAnimationWrongAnswer(List<AnswerCell> answerCells);
         void setNextButtonCategoryCompleteText(String category);
         void showInterstitialAd();
-        void showLoader();
-        void hideLoader();
-        void showErrorLoadingQuestions(String msg);
+        void closeQuestionFragment();
+        void showPassedQuestionConfiguration();
+        void showNotPassedQuestionConfiguration();
+        void showCurrentQuestionConfiguration();
     }
 
     interface Presenter {
@@ -41,6 +41,8 @@ public interface QuestionContract {
         void disableUsedSecondHint();
         void addAnswerCell(AnswerCell cell);
         void addGameCell(GameCell cell);
+        void initContent();
         void updateContent();
+        int getQuestionId();
     }
 }

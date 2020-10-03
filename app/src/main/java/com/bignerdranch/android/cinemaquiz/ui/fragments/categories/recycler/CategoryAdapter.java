@@ -1,6 +1,5 @@
 package com.bignerdranch.android.cinemaquiz.ui.fragments.categories.recycler;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -13,27 +12,25 @@ import com.bignerdranch.android.cinemaquiz.model.Category;
 
 import java.util.List;
 
-public class CategoryAdapter extends RecyclerView.Adapter {
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryHolder> {
 
-    private Context context;
     private List<Category> items;
     private Consumer<String> itemClick;
 
-    public CategoryAdapter(Context context, List<Category> items, Consumer<String> itemClick) {
-        this.context = context;
+    public CategoryAdapter(List<Category> items, Consumer<String> itemClick) {
         this.items = items;
         this.itemClick = itemClick;
     }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new CategoryHolder(LayoutInflater.from(context).inflate(R.layout.list_categories_fragment, parent, false));
+    public CategoryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new CategoryHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.categories_fragment_holder, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ((CategoryHolder) holder).bind(items.get(position), itemClick);
+    public void onBindViewHolder(@NonNull CategoryHolder holder, int position) {
+        holder.bind(items.get(position), itemClick, position);
     }
 
     @Override

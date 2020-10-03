@@ -10,6 +10,11 @@ public class Constants {
     public static final int WRAP_CONTENT = LinearLayout.LayoutParams.WRAP_CONTENT;
     public static final int MATCH_PARENT = LinearLayout.LayoutParams.MATCH_PARENT;
 
+    public static final String CATEGORY_TAG = "CATEGORY_TITLE";
+    public static final String QUESTION_ID = "QUESTION_ID";
+    public static final String QUESTIONS = "QUESTIONS";
+    public static final String QUESTION = "QUESTION";
+
     public class CategoryTitles {
         public static final String HORROR = "УЖАСЫ";
         public static final String COMEDY = "КОМЕДИИ";

@@ -31,10 +31,16 @@ public class AnswerCell extends Cell {
         return correctSymbol;
     }
 
-    public void showCorrectSymbol() {
+    public void showCorrectSymbol(boolean withHint) {
         this.setSymbol(correctSymbol);
-        this.setTextColor(ContextCompat.getColor(getContext(), R.color.correct_color));
-        this.setBackgroundResource(R.drawable.bottom_stroke_green);
+        if (withHint) {
+            this.setTextColor(ContextCompat.getColor(getContext(), R.color.correct_color));
+            this.setBackgroundResource(R.drawable.bottom_stroke_green);
+        } else {
+            this.setTextColor(ContextCompat.getColor(getContext(), R.color.textColor));
+            this.setBackgroundResource(R.drawable.bottom_stroke);
+            this.setClickable(false);
+        }
         this.isPrompted = true;
     }
 

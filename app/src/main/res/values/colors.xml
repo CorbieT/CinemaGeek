@@ -12,4 +12,7 @@
     <color name="clicked_main_menu">#434343</color>
     <color name="textColor">#FFD4D4D4</color>
     <color name="mainBackgroundColor">#1e1e23</color>
+    <color name="answeredQuestionColor">#50D647</color>
+    <color name="currentQuestionColor">#A8A8A8</color>
+    <color name="hintButtonsColor">#57a4ff</color>
 </resources>

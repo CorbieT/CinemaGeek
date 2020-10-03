@@ -52,7 +52,7 @@ public class XmlPullParserHelper {
                     if (parser.getEventType() == XmlPullParser.START_TAG
                             && parser.getName().equals("category")
                             && parser.getAttributeValue(0).equals(categoryTitle)) {
-                        for (int i = 1; i <= 50; i++) {
+                        for (int i = 0; i <= 49; i++) {
                             while (!(parser.getEventType() == XmlPullParser.START_TAG
                                     && parser.getName().equals("question")
                                     && parser.getAttributeValue(0).equals(String.valueOf(i)))) {
